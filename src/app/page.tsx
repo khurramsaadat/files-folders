@@ -293,62 +293,6 @@ function DashboardContent() {
         </div>
         
         <div className="grid grid-cols-4 md:grid-cols-8 lg:grid-cols-12 gap-4 p-6 bg-gradient-to-br from-rose-50 to-orange-50 dark:from-red-900/10 dark:to-orange-900/10 rounded-xl border border-rose-200 dark:border-rose-800">
-          {/* JavaScript */}
-          <div className="flex flex-col items-center space-y-2">
-            <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg flex items-center justify-center shadow-md">
-              <span className="text-white text-xs font-bold">JS</span>
-            </div>
-            <span className="text-xs text-amber-700 dark:text-amber-400 font-medium">JavaScript</span>
-          </div>
-
-          {/* TypeScript */}
-          <div className="flex flex-col items-center space-y-2">
-            <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-red-700 rounded-lg flex items-center justify-center shadow-md">
-              <span className="text-white text-xs font-bold">TS</span>
-            </div>
-            <span className="text-xs text-red-700 dark:text-red-400 font-medium">TypeScript</span>
-          </div>
-
-          {/* HTML */}
-          <div className="flex flex-col items-center space-y-2">
-            <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center shadow-md">
-              <span className="text-white text-xs font-bold">H</span>
-            </div>
-            <span className="text-xs text-orange-700 dark:text-orange-400 font-medium">HTML</span>
-          </div>
-
-          {/* CSS */}
-          <div className="flex flex-col items-center space-y-2">
-            <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-rose-600 rounded-lg flex items-center justify-center shadow-md">
-              <span className="text-white text-xs font-bold">C</span>
-            </div>
-            <span className="text-xs text-pink-700 dark:text-pink-400 font-medium">CSS</span>
-          </div>
-
-          {/* JSON */}
-          <div className="flex flex-col items-center space-y-2">
-            <div className="w-12 h-12 bg-gradient-to-br from-yellow-600 to-orange-700 rounded-lg flex items-center justify-center shadow-md">
-              <span className="text-white text-xs font-bold">J</span>
-            </div>
-            <span className="text-xs text-yellow-700 dark:text-yellow-400 font-medium">JSON</span>
-          </div>
-
-          {/* Markdown */}
-          <div className="flex flex-col items-center space-y-2">
-            <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-red-800 rounded-lg flex items-center justify-center shadow-md">
-              <span className="text-white text-xs font-bold">M</span>
-            </div>
-            <span className="text-xs text-red-700 dark:text-red-400 font-medium">Markdown</span>
-          </div>
-
-          {/* Text */}
-          <div className="flex flex-col items-center space-y-2">
-            <div className="w-12 h-12 bg-gradient-to-br from-rose-500 to-pink-600 rounded-lg flex items-center justify-center shadow-md">
-              <span className="text-white text-xs font-bold">T</span>
-            </div>
-            <span className="text-xs text-rose-700 dark:text-rose-400 font-medium">Text</span>
-          </div>
-
           {/* PNG */}
           <div className="flex flex-col items-center space-y-2">
             <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center shadow-md">
@@ -411,6 +355,62 @@ function DashboardContent() {
               <span className="text-white text-[8px] font-bold">MKV</span>
             </div>
             <span className="text-xs text-rose-700 dark:text-rose-400 font-medium">MKV</span>
+          </div>
+
+          {/* JavaScript */}
+          <div className="flex flex-col items-center space-y-2">
+            <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg flex items-center justify-center shadow-md">
+              <span className="text-white text-xs font-bold">JS</span>
+            </div>
+            <span className="text-xs text-amber-700 dark:text-amber-400 font-medium">JavaScript</span>
+          </div>
+
+          {/* TypeScript */}
+          <div className="flex flex-col items-center space-y-2">
+            <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-red-700 rounded-lg flex items-center justify-center shadow-md">
+              <span className="text-white text-xs font-bold">TS</span>
+            </div>
+            <span className="text-xs text-red-700 dark:text-red-400 font-medium">TypeScript</span>
+          </div>
+
+          {/* HTML */}
+          <div className="flex flex-col items-center space-y-2">
+            <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center shadow-md">
+              <span className="text-white text-xs font-bold">H</span>
+            </div>
+            <span className="text-xs text-orange-700 dark:text-orange-400 font-medium">HTML</span>
+          </div>
+
+          {/* CSS */}
+          <div className="flex flex-col items-center space-y-2">
+            <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-rose-600 rounded-lg flex items-center justify-center shadow-md">
+              <span className="text-white text-xs font-bold">C</span>
+            </div>
+            <span className="text-xs text-pink-700 dark:text-pink-400 font-medium">CSS</span>
+          </div>
+
+          {/* JSON */}
+          <div className="flex flex-col items-center space-y-2">
+            <div className="w-12 h-12 bg-gradient-to-br from-yellow-600 to-orange-700 rounded-lg flex items-center justify-center shadow-md">
+              <span className="text-white text-xs font-bold">J</span>
+            </div>
+            <span className="text-xs text-yellow-700 dark:text-yellow-400 font-medium">JSON</span>
+          </div>
+
+          {/* Markdown */}
+          <div className="flex flex-col items-center space-y-2">
+            <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-red-800 rounded-lg flex items-center justify-center shadow-md">
+              <span className="text-white text-xs font-bold">M</span>
+            </div>
+            <span className="text-xs text-red-700 dark:text-red-400 font-medium">Markdown</span>
+          </div>
+
+          {/* Text */}
+          <div className="flex flex-col items-center space-y-2">
+            <div className="w-12 h-12 bg-gradient-to-br from-rose-500 to-pink-600 rounded-lg flex items-center justify-center shadow-md">
+              <span className="text-white text-xs font-bold">T</span>
+            </div>
+            <span className="text-xs text-rose-700 dark:text-rose-400 font-medium">Text</span>
           </div>
 
           {/* Icons */}

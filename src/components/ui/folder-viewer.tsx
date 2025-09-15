@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Button } from './button';
-import { LuFolderOpen, LuFile, LuChevronRight, LuX, LuSearch, LuHardDrive, LuFileText } from 'react-icons/lu';
+import { LuFolderOpen, LuFile, LuChevronRight, LuArrowLeft, LuSearch, LuHardDrive, LuFileText } from 'react-icons/lu';
 import { formatFileSize } from '@/lib/fileUtils';
 import { PDFExportDialog } from './pdf-export-dialog';
 
@@ -253,6 +253,18 @@ export function FolderViewer({ folderStructure, folderName, onClose }: FolderVie
 
   return (
     <div className="space-y-4">
+      {/* Back Button */}
+      <div className="flex justify-start">
+        <Button 
+          variant="outline" 
+          onClick={onClose} 
+          className="flex items-center gap-2 px-4 py-2 rounded-xl border-slate-300 dark:border-slate-600 hover:bg-red-50 hover:border-red-300 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:border-red-600 dark:hover:text-red-400 transition-all duration-200 shadow-md"
+        >
+          <LuArrowLeft className="h-3 w-3" />
+          <span className="text-xs font-medium">Back</span>
+        </Button>
+      </div>
+
       {/* Modern Header - Extra Compact */}
       <div className="bg-gradient-to-r from-rose-50 via-pink-50 to-orange-50 dark:from-red-800/20 dark:via-rose-800/20 dark:to-orange-800/20 rounded-xl p-4 border border-rose-200 dark:border-rose-700 shadow-lg">
         <div className="flex items-center justify-between">
@@ -281,24 +293,15 @@ export function FolderViewer({ folderStructure, folderName, onClose }: FolderVie
               </div>
             </div>
           </div>
-           <div className="flex items-center gap-2">
-             <Button 
-               variant="outline" 
-               onClick={handleSharePDF}
-               className="flex items-center gap-2 px-4 py-2 rounded-xl border-blue-300 dark:border-blue-600 hover:bg-blue-50 hover:border-blue-400 hover:text-blue-600 dark:hover:bg-blue-900/20 dark:hover:border-blue-500 dark:hover:text-blue-400 transition-all duration-200 shadow-md"
-             >
-               <LuFileText className="h-3 w-3" />
-               <span className="text-xs font-medium">Share PDF</span>
-             </Button>
-             <Button 
-               variant="outline" 
-               onClick={onClose} 
-               className="flex items-center gap-2 px-4 py-2 rounded-xl border-slate-300 dark:border-slate-600 hover:bg-red-50 hover:border-red-300 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:border-red-600 dark:hover:text-red-400 transition-all duration-200 shadow-md"
-             >
-               <LuX className="h-3 w-3" />
-               <span className="text-xs font-medium">Close</span>
-             </Button>
-           </div>
+          <div className="flex items-center gap-2">
+            <Button 
+              onClick={handleSharePDF}
+              className="flex items-center gap-3 px-6 py-3 rounded-2xl bg-gradient-to-r from-red-600 to-red-800 hover:from-red-700 hover:to-red-900 text-white font-bold shadow-xl hover:shadow-2xl hover:shadow-red-500/25 transform hover:scale-105 transition-all duration-300 border-0"
+            >
+              <LuFileText className="h-5 w-5" />
+              <span className="text-base font-bold">Share PDF</span>
+            </Button>
+          </div>
         </div>
       </div>
 

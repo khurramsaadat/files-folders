@@ -57,94 +57,109 @@ export function generateClientPDF(
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
+            line-height: 1.4;
             color: #333;
             background: #fff;
-            padding: 20px;
+            padding: 15mm;
+            font-size: 11px;
+        }
+        
+        @media print {
+            body {
+                margin: 0;
+                padding: 15mm;
+            }
+        }
+        
+        @page {
+            size: A4 portrait;
+            margin: 15mm;
         }
         
         .header {
             text-align: center;
-            margin-bottom: 40px;
-            border-bottom: 3px solid #7c2d12;
-            padding-bottom: 20px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #7c2d12;
+            padding-bottom: 15px;
         }
         
         .header h1 {
             color: #7c2d12;
-            font-size: 28px;
-            margin-bottom: 10px;
+            font-size: 18px;
+            margin-bottom: 8px;
+            font-weight: bold;
         }
         
         .header .subtitle {
             color: #6b7280;
-            font-size: 16px;
-            margin-bottom: 15px;
+            font-size: 12px;
+            margin-bottom: 10px;
         }
         
         .project-info {
             background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 30px;
-            border-left: 4px solid #7c2d12;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 3px solid #7c2d12;
         }
         
         .project-info h2 {
             color: #1f2937;
-            margin-bottom: 15px;
-            font-size: 20px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            font-weight: bold;
         }
         
         .info-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
         }
         
         .info-item {
             background: white;
-            padding: 12px;
-            border-radius: 8px;
+            padding: 8px;
+            border-radius: 6px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         
         .info-label {
             font-weight: 600;
             color: #374151;
-            font-size: 12px;
+            font-size: 9px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 4px;
+            letter-spacing: 0.3px;
+            margin-bottom: 3px;
         }
         
         .info-value {
             color: #1f2937;
-            font-size: 16px;
+            font-size: 11px;
             font-weight: 500;
         }
         
         .file-structure {
             background: #fff;
-            border-radius: 12px;
+            border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
         
         .structure-header {
             background: linear-gradient(135deg, #7c2d12 0%, #6b2713 100%);
             color: white;
-            padding: 20px;
-            font-size: 18px;
+            padding: 12px 15px;
+            font-size: 13px;
             font-weight: 600;
         }
         
         .structure-content {
-            padding: 20px;
+            padding: 15px;
         }
         
         .folder-item, .file-item {
-            padding: 8px 0;
+            padding: 2px 0;
             border-bottom: 1px solid #f3f4f6;
             display: flex;
             align-items: center;
@@ -162,14 +177,14 @@ export function generateClientPDF(
         }
         
         .item-icon {
-            width: 20px;
-            height: 20px;
-            margin-right: 12px;
+            width: 14px;
+            height: 14px;
+            margin-right: 6px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            border-radius: 4px;
-            font-size: 10px;
+            border-radius: 2px;
+            font-size: 7px;
             font-weight: bold;
             color: white;
         }
@@ -195,9 +210,11 @@ export function generateClientPDF(
         }
         
         .item-name {
-            font-weight: 500;
+            font-weight: 400;
             color: #1f2937;
             flex-grow: 1;
+            font-size: 8px;
+            line-height: 1.2;
         }
         
         .folder-name {
@@ -206,13 +223,13 @@ export function generateClientPDF(
         }
         
         .item-meta {
-            font-size: 12px;
+            font-size: 9px;
             color: #6b7280;
             text-align: right;
         }
         
         .nested {
-            margin-left: 32px;
+            margin-left: 15px;
         }
         
         .summary {
@@ -225,8 +242,9 @@ export function generateClientPDF(
         
         .summary h3 {
             color: #7c2d12;
-            margin-bottom: 15px;
-            font-size: 18px;
+            margin-bottom: 10px;
+            font-size: 13px;
+            font-weight: bold;
         }
         
         .summary-grid {
@@ -244,10 +262,10 @@ export function generateClientPDF(
         }
         
         .summary-number {
-            font-size: 24px;
+            font-size: 16px;
             font-weight: bold;
             color: #7c2d12;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
         }
         
         .summary-label {
@@ -278,7 +296,6 @@ export function generateClientPDF(
     <div class="header">
         <h1>📁 ${options.projectName}</h1>
         <div class="subtitle">File Structure Overview</div>
-        <div class="subtitle">Generated on ${timeString}</div>
     </div>
 
     <div class="project-info">
