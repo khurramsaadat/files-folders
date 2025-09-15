@@ -3,11 +3,11 @@
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { LuFolderOpen, LuUsers, LuClock, LuStar, LuUpload } from 'react-icons/lu';
+import { LuFolderOpen, LuUsers, LuClock, LuStar } from 'react-icons/lu';
 import { useFileSystem } from '@/contexts/FileSystemContext';
 import { mockFileSystem, mockClients, mockActivities } from '@/lib/mockData';
 import { formatFileSize, formatRelativeDate } from '@/lib/fileUtils';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { ExportDialog } from '@/components/ui/export-dialog';
 import { FolderViewer } from '@/components/ui/folder-viewer';
 import { LuDownload } from 'react-icons/lu';
@@ -26,106 +26,314 @@ function DashboardContent() {
   const [showExportDialog, setShowExportDialog] = useState(false);
   const [selectedFolderStructure, setSelectedFolderStructure] = useState<FolderStructure[] | null>(null);
   const [selectedFolderName, setSelectedFolderName] = useState<string>('');
-  const folderInputRef = useRef<HTMLInputElement>(null);
   
   // Initialize with mock data
   useEffect(() => {
     // This would normally be done in the context provider
     // For now, we'll use the mock data directly
+    
+    // Demo: Add some mock folder data for testing
+    const mockFolderData: FolderStructure[] = [
+      {
+        name: 'Documents',
+        path: 'Documents',
+        type: 'folder',
+        children: [
+          {
+            name: 'Project Proposal.pdf',
+            path: 'Documents/Project Proposal.pdf',
+            type: 'file',
+            size: 2048000,
+            modified: new Date('2024-01-15')
+          },
+          {
+            name: 'Meeting Notes.docx',
+            path: 'Documents/Meeting Notes.docx',
+            type: 'file',
+            size: 1536000,
+            modified: new Date('2024-01-14')
+          }
+        ]
+      },
+      {
+        name: 'Images',
+        path: 'Images',
+        type: 'folder',
+        children: [
+          {
+            name: 'logo.png',
+            path: 'Images/logo.png',
+            type: 'file',
+            size: 1024000,
+            modified: new Date('2024-01-13')
+          },
+          {
+            name: 'screenshot.jpg',
+            path: 'Images/screenshot.jpg',
+            type: 'file',
+            size: 3072000,
+            modified: new Date('2024-01-12')
+          }
+        ]
+      },
+      {
+        name: 'README.txt',
+        path: 'README.txt',
+        type: 'file',
+        size: 512000,
+        modified: new Date('2024-01-10')
+      }
+    ];
+    
+    // Demo: Show snake-game-project folder to match the screenshot
+    const today = new Date();
+    const lastWeek = new Date(today);
+    lastWeek.setDate(today.getDate() - 4);
+    
+    const demoFolderData: FolderStructure[] = [
+      {
+        name: 'snake-game-project',
+        path: 'snake-game-project',
+        type: 'folder',
+        children: [
+          // Today's files
+          {
+            name: '.git',
+            path: 'snake-game-project/.git',
+            type: 'folder',
+            modified: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 10, 32),
+            children: []
+          },
+          {
+            name: '.next',
+            path: 'snake-game-project/.next',
+            type: 'folder',
+            modified: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 11, 5),
+            children: []
+          },
+          {
+            name: 'node_modules',
+            path: 'snake-game-project/node_modules',
+            type: 'folder',
+            modified: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 10, 32),
+            children: []
+          },
+          {
+            name: 'public',
+            path: 'snake-game-project/public',
+            type: 'folder',
+            modified: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 10, 31),
+            children: []
+          },
+          {
+            name: 'src',
+            path: 'snake-game-project/src',
+            type: 'folder',
+            modified: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 11, 3),
+            children: []
+          },
+          {
+            name: 'example.spec.ts',
+            path: 'snake-game-project/example.spec.ts',
+            type: 'file',
+            size: 2 * 1024,
+            modified: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 10, 58)
+          },
+          {
+            name: 'next.config.mjs',
+            path: 'snake-game-project/next.config.mjs',
+            type: 'file',
+            size: 1 * 1024,
+            modified: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 10, 58)
+          },
+          {
+            name: 'package.json',
+            path: 'snake-game-project/package.json',
+            type: 'file',
+            size: 1 * 1024,
+            modified: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 10, 31)
+          },
+          {
+            name: 'package-lock.json',
+            path: 'snake-game-project/package-lock.json',
+            type: 'file',
+            size: 208 * 1024,
+            modified: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 10, 32)
+          },
+          {
+            name: 'tsconfig.json',
+            path: 'snake-game-project/tsconfig.json',
+            type: 'file',
+            size: 1 * 1024,
+            modified: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 10, 31)
+          },
+          
+          // Last week's files
+          {
+            name: '.gitignore',
+            path: 'snake-game-project/.gitignore',
+            type: 'file',
+            size: 1 * 1024,
+            modified: new Date(lastWeek.getFullYear(), lastWeek.getMonth(), lastWeek.getDate(), 14, 29)
+          },
+          {
+            name: 'eslint.config.mjs',
+            path: 'snake-game-project/eslint.config.mjs',
+            type: 'file',
+            size: 1 * 1024,
+            modified: new Date(lastWeek.getFullYear(), lastWeek.getMonth(), lastWeek.getDate(), 14, 29)
+          },
+          {
+            name: 'next.config.ts',
+            path: 'snake-game-project/next.config.ts',
+            type: 'file',
+            size: 1 * 1024,
+            modified: new Date(lastWeek.getFullYear(), lastWeek.getMonth(), lastWeek.getDate(), 14, 29)
+          },
+          {
+            name: 'next-env.d.ts',
+            path: 'snake-game-project/next-env.d.ts',
+            type: 'file',
+            size: 1 * 1024,
+            modified: new Date(lastWeek.getFullYear(), lastWeek.getMonth(), lastWeek.getDate(), 14, 29)
+          },
+          {
+            name: 'postcss.config.mjs',
+            path: 'snake-game-project/postcss.config.mjs',
+            type: 'file',
+            size: 1 * 1024,
+            modified: new Date(lastWeek.getFullYear(), lastWeek.getMonth(), lastWeek.getDate(), 14, 29)
+          },
+          {
+            name: 'README.md',
+            path: 'snake-game-project/README.md',
+            type: 'file',
+            size: 2 * 1024,
+            modified: new Date(lastWeek.getFullYear(), lastWeek.getMonth(), lastWeek.getDate(), 14, 29)
+          }
+        ]
+      }
+    ];
+    
+    // Uncomment the line below to see the demo folder viewer
+    // setSelectedFolderStructure(demoFolderData);
+    // setSelectedFolderName('snake-game-project');
   }, []);
 
   const stats = getStats();
   const recentActivities = mockActivities.slice(0, 3);
 
   const buildFolderStructure = (files: File[], rootPath: string): FolderStructure[] => {
-    const structure: { [key: string]: FolderStructure } = {};
-
+    const fileMap = new Map<string, FolderStructure>();
+    
+    // First pass: create all files and folders
     files.forEach(file => {
       const pathParts = file.webkitRelativePath.split('/');
-      const fileName = pathParts[pathParts.length - 1];
       
-      // Create folder structure
-      let currentPath = '';
-      let currentStructure = structure;
-      
-      pathParts.slice(0, -1).forEach((part, index) => {
-        currentPath = currentPath ? `${currentPath}/${part}` : part;
+      // Create all parent folders
+      for (let i = 1; i <= pathParts.length - 1; i++) {
+        const folderPath = pathParts.slice(0, i).join('/');
+        const folderName = pathParts[i - 1];
         
-        if (!currentStructure[part]) {
-          currentStructure[part] = {
-            name: part,
-            path: currentPath,
+        if (!fileMap.has(folderPath)) {
+          fileMap.set(folderPath, {
+            name: folderName,
+            path: folderPath,
             type: 'folder',
             children: []
-          };
+          });
         }
-        
-        if (!currentStructure[part].children) {
-          currentStructure[part].children = [];
-        }
-        
-        currentStructure = currentStructure[part].children as { [key: string]: FolderStructure };
-      });
+      }
       
-      // Add file
-      const fileStructure: FolderStructure = {
+      // Add the file
+      const filePath = file.webkitRelativePath;
+      const fileName = pathParts[pathParts.length - 1];
+      
+      fileMap.set(filePath, {
         name: fileName,
-        path: file.webkitRelativePath,
+        path: filePath,
         type: 'file',
         size: file.size,
         modified: new Date(file.lastModified)
-      };
-      
-      if (pathParts.length === 1) {
-        // File is in root
-        structure[fileName] = fileStructure;
-      } else {
-        // File is in a subfolder
-        let currentPath = '';
-        let currentStructure = structure;
-        
-        pathParts.slice(0, -1).forEach((part, index) => {
-          currentPath = currentPath ? `${currentPath}/${part}` : part;
-          
-          if (!currentStructure[part]) {
-            currentStructure[part] = {
-              name: part,
-              path: currentPath,
-              type: 'folder',
-              children: []
-            };
-          }
-          
-          if (!currentStructure[part].children) {
-            currentStructure[part].children = [];
-          }
-          
-          currentStructure = currentStructure[part].children as { [key: string]: FolderStructure };
+      });
+    });
+    
+    // Second pass: build the hierarchy
+    const allItems = Array.from(fileMap.values());
+    
+    allItems.forEach(item => {
+      if (item.type === 'folder') {
+        const children = allItems.filter(child => {
+          const childParentPath = child.path.substring(0, child.path.lastIndexOf('/'));
+          return childParentPath === item.path;
         });
-        
-        currentStructure[fileName] = fileStructure;
+        item.children = children;
       }
     });
-
-    return Object.values(structure);
+    
+    // Return root level items
+    return allItems.filter(item => !item.path.includes('/') || item.path.split('/').length === 1);
   };
 
   const handleFolderSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
     if (files.length === 0) return;
 
+    // Prevent any upload behavior
+    event.preventDefault();
+    event.stopPropagation();
+
     // Get the folder name from the first file
     const firstFile = files[0];
     const folderName = firstFile.webkitRelativePath.split('/')[0];
     
-    // Build folder structure from files
+    // Build folder structure from files - NO UPLOAD, just display
     const structure = buildFolderStructure(files, folderName);
     setSelectedFolderStructure(structure);
     setSelectedFolderName(folderName);
+    
+    // Clear the input immediately to prevent any upload dialogs
+    event.target.value = '';
+    
+    // Reset the input element completely
+    if (event.target) {
+      event.target.files = null;
+    }
   };
 
   const handleOpenFolder = () => {
-    folderInputRef.current?.click();
+    // Create a new input element each time to avoid upload dialogs
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.webkitdirectory = true;
+    input.multiple = true;
+    input.style.display = 'none';
+    
+    input.onchange = (e) => {
+      const files = Array.from((e.target as HTMLInputElement).files || []);
+      if (files.length === 0) return;
+
+      // Get the folder name from the first file
+      const firstFile = files[0];
+      const folderName = firstFile.webkitRelativePath.split('/')[0];
+      
+      // Build folder structure from files - NO UPLOAD, just display
+      const structure = buildFolderStructure(files, folderName);
+      setSelectedFolderStructure(structure);
+      setSelectedFolderName(folderName);
+      
+      // Clean up
+      document.body.removeChild(input);
+    };
+    
+    input.oncancel = () => {
+      // Clean up if user cancels
+      document.body.removeChild(input);
+    };
+    
+    // Add to DOM and trigger
+    document.body.appendChild(input);
+    input.click();
   };
 
   const handleCloseFolder = () => {
@@ -135,7 +343,7 @@ function DashboardContent() {
 
   // If a folder is selected, show the folder viewer
   if (selectedFolderStructure) {
-    return (
+  return (
       <div className="space-y-6">
         <FolderViewer 
           folderStructure={selectedFolderStructure}
@@ -213,7 +421,7 @@ function DashboardContent() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {fileSystem.children.find(f => f.name === 'Favorites')?.children.length || 0}
+              {(fileSystem.children.find(f => f.name === 'Favorites' && f.type === 'folder') as any)?.children?.length || 0}
             </div>
             <p className="text-xs text-muted-foreground">
               Starred items
@@ -292,16 +500,7 @@ function DashboardContent() {
         onClose={() => setShowExportDialog(false)} 
       />
       
-      {/* Hidden folder input */}
-      <input
-        ref={folderInputRef}
-        type="file"
-        webkitdirectory=""
-        directory=""
-        multiple
-        onChange={handleFolderSelect}
-        className="hidden"
-      />
+      {/* Dynamic folder input created on demand - no upload dialogs */}
     </div>
   );
 }
