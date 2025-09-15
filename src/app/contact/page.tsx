@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { LuMail, LuClock, LuMessageSquare, LuSend, LuChevronRight } from 'react-icons/lu';
 
 export default function ContactPage() {
@@ -55,7 +55,7 @@ export default function ContactPage() {
             <span className="bg-gradient-to-r from-red-600 to-red-800 dark:from-rose-300 dark:to-orange-300 bg-clip-text text-transparent">Touch</span>
           </h1>
           <p className="text-lg text-red-600 dark:text-rose-400 max-w-2xl mx-auto">
-            Have a question or suggestion? We'd love to hear from you!
+            Have a question or suggestion? We&apos;d love to hear from you!
           </p>
         </div>
 
@@ -234,7 +234,7 @@ export default function ContactPage() {
                   How do I request a new tool?
                 </h3>
                 <p className="text-red-600 dark:text-rose-400">
-                  Use the contact form above and select "Feature Request" as your subject. Describe the tool you'd like to see and how it would help you.
+                  Use the contact form above and select &quot;Feature Request&quot; as your subject. Describe the tool you&apos;d like to see and how it would help you.
                 </p>
               </div>
 
@@ -243,7 +243,7 @@ export default function ContactPage() {
                   Is my data secure when using Files & Folders?
                 </h3>
                 <p className="text-red-600 dark:text-rose-400">
-                  Yes! All tools run entirely in your browser. Your data never leaves your device and we don't store any information you process.
+                  Yes! All tools run entirely in your browser. Your data never leaves your device and we don&apos;t store any information you process.
                 </p>
               </div>
 

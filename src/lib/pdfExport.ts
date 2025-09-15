@@ -39,7 +39,6 @@ export function generateClientPDF(
   options: PDFExportOptions
 ): string {
   const timestamp = new Date().toISOString().split('T')[0];
-  const timeString = new Date().toLocaleString();
   
   const htmlContent = `
 <!DOCTYPE html>
