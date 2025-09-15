@@ -17,29 +17,44 @@ import {
 } from '@/types';
 import { mockFileSystem, mockClients } from '@/lib/mockData';
 
+// State Interface
+interface FileSystemState {
+  fileSystem: FileSystemRoot;
+  clients: Client[];
+  currentPath: string;
+  selectedItems: string[];
+  viewMode: ViewMode;
+  sortBy: SortBy;
+  sortOrder: SortOrder;
+  searchQuery: string;
+  filter: FileFilter;
+  isLoading: boolean;
+  error: string | null;
+}
+
 // Initial State
-const initialState = {
+const initialState: FileSystemState = {
   fileSystem: {
     id: 'root',
     name: 'Root',
     type: 'root' as const,
-    children: [],
+    children: [] as (FileItem | FolderItem)[],
     createdAt: new Date(),
     modifiedAt: new Date(),
   },
-  clients: [],
+  clients: [] as Client[],
   currentPath: '/',
-  selectedItems: [],
+  selectedItems: [] as string[],
   viewMode: 'grid' as ViewMode,
   sortBy: 'name' as SortBy,
   sortOrder: 'asc' as SortOrder,
   searchQuery: '',
   filter: {
     searchTerm: '',
-    fileTypes: [],
+    fileTypes: [] as string[],
     dateRange: {},
     clientId: undefined,
-    tags: [],
+    tags: [] as string[],
   },
   isLoading: false,
   error: null,
@@ -68,7 +83,7 @@ type FileSystemAction =
   | { type: 'DELETE_CLIENT'; payload: string };
 
 // Reducer
-function fileSystemReducer(state: typeof initialState, action: FileSystemAction) {
+function fileSystemReducer(state: FileSystemState, action: FileSystemAction): FileSystemState {
   switch (action.type) {
     case 'SET_CURRENT_PATH':
       return { ...state, currentPath: action.payload };
@@ -116,8 +131,8 @@ function fileSystemReducer(state: typeof initialState, action: FileSystemAction)
         fileSystem: {
           ...state.fileSystem,
           children: state.fileSystem.children.map((item) =>
-            item.id === action.payload.id && item.type === 'file'
-              ? { ...item, ...action.payload.updates }
+            (item as any).id === action.payload.id && (item as any).type === 'file'
+              ? { ...(item as any), ...action.payload.updates }
               : item
           ),
           modifiedAt: new Date(),
@@ -129,8 +144,8 @@ function fileSystemReducer(state: typeof initialState, action: FileSystemAction)
         fileSystem: {
           ...state.fileSystem,
           children: state.fileSystem.children.map((item) =>
-            item.id === action.payload.id && item.type === 'folder'
-              ? { ...item, ...action.payload.updates }
+            (item as any).id === action.payload.id && (item as any).type === 'folder'
+              ? { ...(item as any), ...action.payload.updates }
               : item
           ),
           modifiedAt: new Date(),
@@ -141,7 +156,7 @@ function fileSystemReducer(state: typeof initialState, action: FileSystemAction)
         ...state,
         fileSystem: {
           ...state.fileSystem,
-          children: state.fileSystem.children.filter((item) => item.id !== action.payload),
+          children: state.fileSystem.children.filter((item) => (item as any).id !== action.payload),
           modifiedAt: new Date(),
         },
       };
@@ -154,15 +169,15 @@ function fileSystemReducer(state: typeof initialState, action: FileSystemAction)
       return {
         ...state,
         clients: state.clients.map((client) =>
-          client.id === action.payload.id
-            ? { ...client, ...action.payload.updates }
+          (client as any).id === action.payload.id
+            ? { ...(client as any), ...action.payload.updates }
             : client
         ),
       };
     case 'DELETE_CLIENT':
       return {
         ...state,
-        clients: state.clients.filter((client) => client.id !== action.payload),
+        clients: state.clients.filter((client) => (client as any).id !== action.payload),
       };
     default:
       return state;

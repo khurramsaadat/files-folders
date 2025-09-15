@@ -6,7 +6,7 @@ export function getFileTypeFromExtension(extension: string): string {
   const ext = extension.toLowerCase();
   
   for (const [category, extensions] of Object.entries(FILE_TYPE_CATEGORIES)) {
-    if (extensions.includes(ext)) {
+    if ((extensions as readonly string[]).includes(ext)) {
       return category;
     }
   }
@@ -276,7 +276,7 @@ export function sortItems(items: FileSystemItem[], sortBy: SortBy, sortOrder: So
 // File validation
 export function validateFile(file: File): { valid: boolean; error?: string } {
   const maxSize = 100 * 1024 * 1024; // 100MB
-  const allowedTypes = Object.values(FILE_TYPE_CATEGORIES).flat();
+  const allowedTypes = Object.values(FILE_TYPE_CATEGORIES).flat() as string[];
   
   if (file.size > maxSize) {
     return {

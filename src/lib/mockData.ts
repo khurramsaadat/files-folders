@@ -341,7 +341,7 @@ export const mockActivities: ActivityItem[] = [
 // Utility function to get file type category
 export function getFileTypeCategory(extension: string): string {
   for (const [category, extensions] of Object.entries(FILE_TYPE_CATEGORIES)) {
-    if (extensions.includes(extension.toLowerCase())) {
+    if ((extensions as readonly string[]).includes(extension.toLowerCase())) {
       return category;
     }
   }
