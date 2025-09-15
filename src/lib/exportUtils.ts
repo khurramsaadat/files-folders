@@ -34,8 +34,7 @@ export interface ExportStats {
 // Generate CSV content
 export function generateCSV(
   fileSystem: FileSystemItem[],
-  clients: Client[],
-  options: ExportOptions
+  clients: Client[]
 ): string {
   const headers = [
     'Type',
@@ -247,7 +246,7 @@ export function exportFileSystem(
 
   switch (options.format) {
     case 'csv':
-      content = generateCSV(fileSystem, clients, options);
+      content = generateCSV(fileSystem, clients);
       filename = `files-folders-export-${timestamp}.csv`;
       mimeType = 'text/csv';
       break;
@@ -271,12 +270,11 @@ export function exportFileSystem(
 // Generate Excel file (basic implementation)
 export function generateExcel(
   fileSystem: FileSystemItem[],
-  clients: Client[],
-  options: ExportOptions
+  clients: Client[]
 ) {
   // This would require a library like xlsx
   // For now, we'll generate a CSV that can be opened in Excel
-  const csvContent = generateCSV(fileSystem, clients, options);
+  const csvContent = generateCSV(fileSystem, clients);
   const timestamp = new Date().toISOString().split('T')[0];
   downloadFile(csvContent, `files-folders-export-${timestamp}.csv`, 'text/csv');
 }

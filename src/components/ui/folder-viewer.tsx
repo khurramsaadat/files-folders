@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from './button';
-import { LuFolderOpen, LuFile, LuChevronRight, LuChevronDown, LuX, LuRefreshCw, LuSearch, LuLayoutGrid, LuList, LuCalendar, LuHardDrive, LuFileText } from 'react-icons/lu';
+import { LuFolderOpen, LuFile, LuChevronRight, LuX, LuSearch, LuHardDrive, LuFileText } from 'react-icons/lu';
 import { formatFileSize } from '@/lib/fileUtils';
 import { PDFExportDialog } from './pdf-export-dialog';
 
@@ -23,51 +23,6 @@ const formatDate = (date: Date, includeTime: boolean = false): string => {
   return `${day}-${month}-${year}`;
 };
 
-// Get file icon based on extension
-const getFileIcon = (fileName: string): string => {
-  const extension = fileName.split('.').pop()?.toLowerCase();
-  
-  switch (extension) {
-    case 'js':
-    case 'ts':
-    case 'tsx':
-    case 'jsx':
-      return '📄';
-    case 'html':
-      return '📄';
-    case 'css':
-      return '📄';
-    case 'json':
-      return '📄';
-    case 'md':
-      return '📄';
-    case 'txt':
-      return '📄';
-    case 'pdf':
-      return '📄';
-    case 'jpg':
-    case 'jpeg':
-    case 'png':
-    case 'gif':
-    case 'svg':
-      return '🖼️';
-    case 'mp4':
-    case 'mov':
-    case 'avi':
-      return '🎬';
-    case 'mp3':
-    case 'wav':
-      return '🎵';
-    case 'zip':
-    case 'rar':
-    case '7z':
-      return '📦';
-    case 'gitignore':
-      return '📄';
-    default:
-      return '📄';
-  }
-};
 
 // Get file type description based on extension
 const getFileType = (fileName: string): string => {
@@ -146,7 +101,6 @@ export function FolderViewer({ folderStructure, folderName, onClose }: FolderVie
   };
 
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set());
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'name' | 'size' | 'date'>('name');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');

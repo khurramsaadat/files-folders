@@ -1,4 +1,4 @@
-import { formatFileSize, formatDate } from './fileUtils';
+import { formatFileSize } from './fileUtils';
 
 // PDF Export for Folder Structure (Client-friendly)
 export interface FolderStructure {
@@ -27,7 +27,7 @@ export function generateClientPDF(
   const timestamp = new Date().toISOString().split('T')[0];
   const timeString = new Date().toLocaleString();
   
-  let htmlContent = `
+  const htmlContent = `
 <!DOCTYPE html>
 <html lang="en">
 <head>

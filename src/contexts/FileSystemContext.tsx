@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useReducer, useCallback, useEffect } from 'react';
+import React, { createContext, useContext, useReducer, useCallback } from 'react';
 import {
   FileSystemContextType,
   FileSystemRoot,
@@ -13,9 +13,7 @@ import {
   FileFilter,
   SearchResult,
   FileSystemStats,
-  ActivityItem,
 } from '@/types';
-import { mockFileSystem, mockClients } from '@/lib/mockData';
 
 // State Interface
 interface FileSystemState {
@@ -191,11 +189,7 @@ const FileSystemContext = createContext<FileSystemContextType | undefined>(undef
 export function FileSystemProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(fileSystemReducer, initialState);
 
-  // Initialize with mock data
-  useEffect(() => {
-    dispatch({ type: 'SET_FILE_SYSTEM', payload: mockFileSystem });
-    dispatch({ type: 'SET_CLIENTS', payload: mockClients });
-  }, []);
+  // Context provider initialized with empty state - data loaded via user actions
 
   // Action creators
   const setCurrentPath = useCallback((path: string) => {

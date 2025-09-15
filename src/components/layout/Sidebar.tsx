@@ -8,7 +8,6 @@ import {
   LuStar, 
   LuClock, 
   LuTrash2, 
-  LuSettings,
   LuChevronRight,
   LuPlus
 } from 'react-icons/lu';

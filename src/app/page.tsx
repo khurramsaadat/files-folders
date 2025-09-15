@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { LuFolderOpen, LuUsers, LuClock, LuStar } from 'react-icons/lu';
 import { useFileSystem } from '@/contexts/FileSystemContext';
-import { mockFileSystem, mockClients, mockActivities } from '@/lib/mockData';
+import { mockActivities } from '@/lib/mockData';
 import { formatFileSize, formatRelativeDate } from '@/lib/fileUtils';
 import { useEffect, useState } from 'react';
 import { ExportDialog } from '@/components/ui/export-dialog';
@@ -32,198 +32,13 @@ function DashboardContent() {
     // This would normally be done in the context provider
     // For now, we'll use the mock data directly
     
-    // Demo: Add some mock folder data for testing
-    const mockFolderData: FolderStructure[] = [
-      {
-        name: 'Documents',
-        path: 'Documents',
-        type: 'folder',
-        children: [
-          {
-            name: 'Project Proposal.pdf',
-            path: 'Documents/Project Proposal.pdf',
-            type: 'file',
-            size: 2048000,
-            modified: new Date('2024-01-15')
-          },
-          {
-            name: 'Meeting Notes.docx',
-            path: 'Documents/Meeting Notes.docx',
-            type: 'file',
-            size: 1536000,
-            modified: new Date('2024-01-14')
-          }
-        ]
-      },
-      {
-        name: 'Images',
-        path: 'Images',
-        type: 'folder',
-        children: [
-          {
-            name: 'logo.png',
-            path: 'Images/logo.png',
-            type: 'file',
-            size: 1024000,
-            modified: new Date('2024-01-13')
-          },
-          {
-            name: 'screenshot.jpg',
-            path: 'Images/screenshot.jpg',
-            type: 'file',
-            size: 3072000,
-            modified: new Date('2024-01-12')
-          }
-        ]
-      },
-      {
-        name: 'README.txt',
-        path: 'README.txt',
-        type: 'file',
-        size: 512000,
-        modified: new Date('2024-01-10')
-      }
-    ];
-    
-    // Demo: Show snake-game-project folder to match the screenshot
-    const today = new Date();
-    const lastWeek = new Date(today);
-    lastWeek.setDate(today.getDate() - 4);
-    
-    const demoFolderData: FolderStructure[] = [
-      {
-        name: 'snake-game-project',
-        path: 'snake-game-project',
-        type: 'folder',
-        children: [
-          // Today's files
-          {
-            name: '.git',
-            path: 'snake-game-project/.git',
-            type: 'folder',
-            modified: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 10, 32),
-            children: []
-          },
-          {
-            name: '.next',
-            path: 'snake-game-project/.next',
-            type: 'folder',
-            modified: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 11, 5),
-            children: []
-          },
-          {
-            name: 'node_modules',
-            path: 'snake-game-project/node_modules',
-            type: 'folder',
-            modified: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 10, 32),
-            children: []
-          },
-          {
-            name: 'public',
-            path: 'snake-game-project/public',
-            type: 'folder',
-            modified: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 10, 31),
-            children: []
-          },
-          {
-            name: 'src',
-            path: 'snake-game-project/src',
-            type: 'folder',
-            modified: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 11, 3),
-            children: []
-          },
-          {
-            name: 'example.spec.ts',
-            path: 'snake-game-project/example.spec.ts',
-            type: 'file',
-            size: 2 * 1024,
-            modified: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 10, 58)
-          },
-          {
-            name: 'next.config.mjs',
-            path: 'snake-game-project/next.config.mjs',
-            type: 'file',
-            size: 1 * 1024,
-            modified: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 10, 58)
-          },
-          {
-            name: 'package.json',
-            path: 'snake-game-project/package.json',
-            type: 'file',
-            size: 1 * 1024,
-            modified: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 10, 31)
-          },
-          {
-            name: 'package-lock.json',
-            path: 'snake-game-project/package-lock.json',
-            type: 'file',
-            size: 208 * 1024,
-            modified: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 10, 32)
-          },
-          {
-            name: 'tsconfig.json',
-            path: 'snake-game-project/tsconfig.json',
-            type: 'file',
-            size: 1 * 1024,
-            modified: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 10, 31)
-          },
-          
-          // Last week's files
-          {
-            name: '.gitignore',
-            path: 'snake-game-project/.gitignore',
-            type: 'file',
-            size: 1 * 1024,
-            modified: new Date(lastWeek.getFullYear(), lastWeek.getMonth(), lastWeek.getDate(), 14, 29)
-          },
-          {
-            name: 'eslint.config.mjs',
-            path: 'snake-game-project/eslint.config.mjs',
-            type: 'file',
-            size: 1 * 1024,
-            modified: new Date(lastWeek.getFullYear(), lastWeek.getMonth(), lastWeek.getDate(), 14, 29)
-          },
-          {
-            name: 'next.config.ts',
-            path: 'snake-game-project/next.config.ts',
-            type: 'file',
-            size: 1 * 1024,
-            modified: new Date(lastWeek.getFullYear(), lastWeek.getMonth(), lastWeek.getDate(), 14, 29)
-          },
-          {
-            name: 'next-env.d.ts',
-            path: 'snake-game-project/next-env.d.ts',
-            type: 'file',
-            size: 1 * 1024,
-            modified: new Date(lastWeek.getFullYear(), lastWeek.getMonth(), lastWeek.getDate(), 14, 29)
-          },
-          {
-            name: 'postcss.config.mjs',
-            path: 'snake-game-project/postcss.config.mjs',
-            type: 'file',
-            size: 1 * 1024,
-            modified: new Date(lastWeek.getFullYear(), lastWeek.getMonth(), lastWeek.getDate(), 14, 29)
-          },
-          {
-            name: 'README.md',
-            path: 'snake-game-project/README.md',
-            type: 'file',
-            size: 2 * 1024,
-            modified: new Date(lastWeek.getFullYear(), lastWeek.getMonth(), lastWeek.getDate(), 14, 29)
-          }
-        ]
-      }
-    ];
-    
-    // Uncomment the line below to see the demo folder viewer
-    // setSelectedFolderStructure(demoFolderData);
-    // setSelectedFolderName('snake-game-project');
+    // Demo data removed - using real folder selection instead
   }, []);
 
   const stats = getStats();
   const recentActivities = mockActivities.slice(0, 3);
 
-  const buildFolderStructure = (files: File[], rootPath: string): FolderStructure[] => {
+  const buildFolderStructure = (files: File[]): FolderStructure[] => {
     const fileMap = new Map<string, FolderStructure>();
     
     // First pass: create all files and folders
@@ -275,31 +90,6 @@ function DashboardContent() {
     return allItems.filter(item => !item.path.includes('/') || item.path.split('/').length === 1);
   };
 
-  const handleFolderSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(event.target.files || []);
-    if (files.length === 0) return;
-
-    // Prevent any upload behavior
-    event.preventDefault();
-    event.stopPropagation();
-
-    // Get the folder name from the first file
-    const firstFile = files[0];
-    const folderName = firstFile.webkitRelativePath.split('/')[0];
-    
-    // Build folder structure from files - NO UPLOAD, just display
-    const structure = buildFolderStructure(files, folderName);
-    setSelectedFolderStructure(structure);
-    setSelectedFolderName(folderName);
-    
-    // Clear the input immediately to prevent any upload dialogs
-    event.target.value = '';
-    
-    // Reset the input element completely
-    if (event.target) {
-      event.target.files = null;
-    }
-  };
 
   const handleOpenFolder = () => {
     // Create a new input element each time to avoid upload dialogs
@@ -318,7 +108,7 @@ function DashboardContent() {
       const folderName = firstFile.webkitRelativePath.split('/')[0];
       
       // Build folder structure from files - NO UPLOAD, just display
-      const structure = buildFolderStructure(files, folderName);
+      const structure = buildFolderStructure(files);
       setSelectedFolderStructure(structure);
       setSelectedFolderName(folderName);
       
