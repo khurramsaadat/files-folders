@@ -69,7 +69,7 @@ export function FolderBrowser({ isOpen, onClose, onFolderSelected }: FolderBrows
           currentStructure[part].children = [];
         }
         
-        currentStructure = currentStructure[part].children as { [key: string]: FolderStructure };
+        currentStructure = currentStructure[part].children as any;
       });
       
       // Add file
@@ -105,7 +105,7 @@ export function FolderBrowser({ isOpen, onClose, onFolderSelected }: FolderBrows
             currentStructure[part].children = [];
           }
           
-          currentStructure = currentStructure[part].children as { [key: string]: FolderStructure };
+          currentStructure = currentStructure[part].children as any;
         });
         
         currentStructure[fileName] = fileStructure;
@@ -236,8 +236,8 @@ export function FolderBrowser({ isOpen, onClose, onFolderSelected }: FolderBrows
             <input
               ref={folderInputRef}
               type="file"
-              webkitdirectory=""
-              directory=""
+              {...({ webkitdirectory: "" } as any)}
+              {...({ directory: "" } as any)}
               multiple
               onChange={handleFolderSelect}
               className="hidden"
