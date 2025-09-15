@@ -396,8 +396,7 @@ function generateFileStructureHTML(structure: FolderStructure[], options: PDFExp
             <div class="item-name">${item.name}</div>
           </div>
           <div class="item-meta">
-            ${options.includeFileSize && item.size ? formatFileSize(item.size) : ''}
-            ${options.includeDate && item.modified ? `<br>${formatDate(item.modified)}` : ''}
+            <!-- File metadata removed for cleaner client presentation -->
           </div>
         </div>
       `;

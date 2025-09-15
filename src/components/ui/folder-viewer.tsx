@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Button } from './button';
 import { LuFolderOpen, LuFile, LuChevronRight, LuChevronDown, LuX, LuRefreshCw, LuSearch, LuLayoutGrid, LuList, LuCalendar, LuHardDrive, LuFileText } from 'react-icons/lu';
 import { formatFileSize } from '@/lib/fileUtils';
-import { exportFolderStructurePDF, PDFExportOptions } from '@/lib/pdfExport';
+import { PDFExportDialog } from './pdf-export-dialog';
 
 // Format date to match Windows Explorer format
 const formatDate = (date: Date, includeTime: boolean = false): string => {
@@ -150,6 +150,7 @@ export function FolderViewer({ folderStructure, folderName, onClose }: FolderVie
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'name' | 'size' | 'date'>('name');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [showPDFDialog, setShowPDFDialog] = useState(false);
 
   // Auto-expand all folders when folderStructure changes
   useEffect(() => {
@@ -179,15 +180,7 @@ export function FolderViewer({ folderStructure, folderName, onClose }: FolderVie
   };
 
   const handleSharePDF = () => {
-    const options: PDFExportOptions = {
-      projectName: folderName,
-      clientName: 'ARMANI', // You can make this dynamic based on project
-      includeFileSize: true,
-      includeDate: true,
-      notes: 'This report contains the complete file structure for your project deliverables.'
-    };
-
-    exportFolderStructurePDF(folderStructure, options);
+    setShowPDFDialog(true);
   };
 
   const getFileIcon = (fileName: string) => {
@@ -729,6 +722,14 @@ export function FolderViewer({ folderStructure, folderName, onClose }: FolderVie
           </div>
         </div>
       </div>
+
+      {/* PDF Export Dialog */}
+      <PDFExportDialog
+        isOpen={showPDFDialog}
+        onClose={() => setShowPDFDialog(false)}
+        folderStructure={folderStructure}
+        defaultProjectName={folderName}
+      />
     </div>
   );
 }
