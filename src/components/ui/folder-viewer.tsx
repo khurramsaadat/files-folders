@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from './button';
-import { LuFolderOpen, LuFile, LuChevronRight, LuChevronDown, LuX, LuRefreshCw, LuSearch, LuLayoutGrid, LuList, LuCalendar, LuHardDrive } from 'react-icons/lu';
+import { LuFolderOpen, LuFile, LuChevronRight, LuChevronDown, LuX, LuRefreshCw, LuSearch, LuLayoutGrid, LuList, LuCalendar, LuHardDrive, LuFileText } from 'react-icons/lu';
 import { formatFileSize } from '@/lib/fileUtils';
+import { exportFolderStructurePDF, PDFExportOptions } from '@/lib/pdfExport';
 
 // Format date to match Windows Explorer format
 const formatDate = (date: Date, includeTime: boolean = false): string => {
@@ -175,6 +176,18 @@ export function FolderViewer({ folderStructure, folderName, onClose }: FolderVie
 
   const collapseAllFolders = () => {
     setExpandedFolders(new Set());
+  };
+
+  const handleSharePDF = () => {
+    const options: PDFExportOptions = {
+      projectName: folderName,
+      clientName: 'ARMANI', // You can make this dynamic based on project
+      includeFileSize: true,
+      includeDate: true,
+      notes: 'This report contains the complete file structure for your project deliverables.'
+    };
+
+    exportFolderStructurePDF(folderStructure, options);
   };
 
   const getFileIcon = (fileName: string) => {
@@ -537,9 +550,9 @@ export function FolderViewer({ folderStructure, folderName, onClose }: FolderVie
   };
 
   return (
-    <div className="space-y-6">
-      {/* Modern Header - Compact */}
-      <div className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 dark:from-slate-800 dark:via-slate-900 dark:to-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-lg">
+    <div className="space-y-4">
+      {/* Modern Header - Extra Compact */}
+      <div className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 dark:from-slate-800 dark:via-slate-900 dark:to-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 shadow-lg">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <div className="relative">
@@ -566,20 +579,30 @@ export function FolderViewer({ folderStructure, folderName, onClose }: FolderVie
               </div>
             </div>
           </div>
-          <Button 
-            variant="outline" 
-            onClick={onClose} 
-            className="flex items-center gap-2 px-4 py-2 rounded-xl border-slate-300 dark:border-slate-600 hover:bg-red-50 hover:border-red-300 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:border-red-600 dark:hover:text-red-400 transition-all duration-200 shadow-md"
-          >
-            <LuX className="h-3 w-3" />
-            <span className="text-xs font-medium">Close</span>
-          </Button>
+           <div className="flex items-center gap-2">
+             <Button 
+               variant="outline" 
+               onClick={handleSharePDF}
+               className="flex items-center gap-2 px-4 py-2 rounded-xl border-blue-300 dark:border-blue-600 hover:bg-blue-50 hover:border-blue-400 hover:text-blue-600 dark:hover:bg-blue-900/20 dark:hover:border-blue-500 dark:hover:text-blue-400 transition-all duration-200 shadow-md"
+             >
+               <LuFileText className="h-3 w-3" />
+               <span className="text-xs font-medium">Share PDF</span>
+             </Button>
+             <Button 
+               variant="outline" 
+               onClick={onClose} 
+               className="flex items-center gap-2 px-4 py-2 rounded-xl border-slate-300 dark:border-slate-600 hover:bg-red-50 hover:border-red-300 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:border-red-600 dark:hover:text-red-400 transition-all duration-200 shadow-md"
+             >
+               <LuX className="h-3 w-3" />
+               <span className="text-xs font-medium">Close</span>
+             </Button>
+           </div>
         </div>
       </div>
 
-      {/* Modern Search and Controls - Compact */}
-      <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-700 rounded-2xl p-4 shadow-lg">
-        <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
+      {/* Modern Search and Controls - Extra Compact */}
+      <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-700 rounded-xl p-3 shadow-lg">
+        <div className="flex flex-col sm:flex-row gap-3 items-center justify-between">
           {/* Modern Search - Compact */}
           <div className="relative flex-1 max-w-sm">
             <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
@@ -646,7 +669,7 @@ export function FolderViewer({ folderStructure, folderName, onClose }: FolderVie
       <div className="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl overflow-hidden">
         <div className="p-0">
           {filteredAndSortedItems().length > 0 ? (
-            <div className="max-h-[500px] overflow-y-auto bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm">
+            <div className="max-h-[70vh] overflow-y-auto bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm">
               {/* Modern File List - Compact */}
               <div className="p-3 space-y-0.5">
                 {filteredAndSortedItems().map(item => renderModernListItem(item))}
@@ -668,9 +691,9 @@ export function FolderViewer({ folderStructure, folderName, onClose }: FolderVie
         </div>
       </div>
 
-      {/* Modern Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-2xl p-6 border border-blue-200 dark:border-blue-700/30 shadow-lg hover:shadow-xl transition-all duration-200">
+      {/* Modern Stats - Compact */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl p-4 border border-blue-200 dark:border-blue-700/30 shadow-lg hover:shadow-xl transition-all duration-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">{stats.totalFiles}</p>
@@ -682,7 +705,7 @@ export function FolderViewer({ folderStructure, folderName, onClose }: FolderVie
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 dark:from-indigo-900/20 dark:to-indigo-800/20 rounded-2xl p-6 border border-indigo-200 dark:border-indigo-700/30 shadow-lg hover:shadow-xl transition-all duration-200">
+        <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 dark:from-indigo-900/20 dark:to-indigo-800/20 rounded-xl p-4 border border-indigo-200 dark:border-indigo-700/30 shadow-lg hover:shadow-xl transition-all duration-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-3xl font-bold text-indigo-600 dark:text-indigo-400">{stats.totalFolders}</p>
@@ -694,7 +717,7 @@ export function FolderViewer({ folderStructure, folderName, onClose }: FolderVie
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-2xl p-6 border border-purple-200 dark:border-purple-700/30 shadow-lg hover:shadow-xl transition-all duration-200">
+        <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-xl p-4 border border-purple-200 dark:border-purple-700/30 shadow-lg hover:shadow-xl transition-all duration-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-3xl font-bold text-purple-600 dark:text-purple-400">{formatFileSize(stats.totalSize)}</p>
