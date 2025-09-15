@@ -44,7 +44,7 @@ function DashboardContent() {
 
   const buildFolderStructure = (files: File[]): FolderStructure[] => {
     const fileMap = new Map<string, FolderStructure>();
-    
+
     // First pass: create all files and folders
     files.forEach(file => {
       const pathParts = file.webkitRelativePath.split('/');
@@ -62,8 +62,8 @@ function DashboardContent() {
             children: []
           });
         }
-      }
-      
+        }
+        
       // Add the file
       const filePath = file.webkitRelativePath;
       const fileName = pathParts[pathParts.length - 1];
@@ -239,8 +239,8 @@ function DashboardContent() {
         </h1>
         <p className="text-lg text-red-600 dark:text-rose-400 max-w-2xl mx-auto">
           Organize, explore, and share your project files with beautiful visual reports
-        </p>
-      </div>
+          </p>
+        </div>
 
 
       {/* Drag and Drop Area - Wider with Warm Theme */}
@@ -258,8 +258,8 @@ function DashboardContent() {
           <div className="space-y-6">
             <div className="mx-auto w-20 h-20 bg-gradient-to-br from-red-600 to-red-800 rounded-xl flex items-center justify-center shadow-lg">
               <LuFolderOpen className="w-10 h-10 text-white" />
-            </div>
-            
+      </div>
+
             <div className="space-y-3">
               <h3 className="text-2xl font-semibold bg-gradient-to-r from-red-700 to-red-900 dark:from-rose-200 dark:to-orange-200 bg-clip-text text-transparent">
                 {isDragOver ? 'Drop your files here' : 'Drag & drop files or folders'}
@@ -267,7 +267,7 @@ function DashboardContent() {
               <p className="text-base text-red-600 dark:text-rose-400">
                 {isDragOver ? 'Release to upload' : 'or click the button below to browse'}
               </p>
-            </div>
+      </div>
 
             <Button 
               size="lg"
@@ -281,6 +281,125 @@ function DashboardContent() {
         </div>
       </div>
 
+      {/* Demo File Structure Preview */}
+      <div className="max-w-4xl mx-auto mt-16">
+        <div className="text-center mb-8">
+          <h3 className="text-2xl font-bold bg-gradient-to-r from-red-700 to-red-900 dark:from-rose-200 dark:to-orange-200 bg-clip-text text-transparent mb-3">
+            See Your Files Organized
+          </h3>
+          <p className="text-base text-red-600 dark:text-rose-400 max-w-2xl mx-auto">
+            Transform messy folder structures into beautiful, organized reports that you can easily share with clients and team members.
+          </p>
+        </div>
+
+        {/* Demo File Structure */}
+        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-rose-200 dark:border-rose-800 overflow-hidden">
+          {/* Header */}
+          <div className="bg-gradient-to-r from-red-600 to-red-800 text-white px-6 py-4">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+                <LuFolderOpen className="w-5 h-5" />
+              </div>
+              <h4 className="text-lg font-bold">File Structure</h4>
+            </div>
+          </div>
+
+          {/* File List */}
+          <div className="p-6 space-y-2">
+            {/* Root Folder */}
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-gradient-to-r from-rose-50 to-pink-50 dark:from-red-900/20 dark:to-rose-900/20">
+              <div className="w-6 h-6 bg-gradient-to-br from-red-600 to-red-800 rounded-lg flex items-center justify-center">
+                <LuFolderOpen className="w-4 h-4 text-white" />
+              </div>
+              <span className="font-medium text-sm text-red-800 dark:text-rose-300">CREATIVE VIDEO PROJECT Q4 2025</span>
+              <span className="ml-auto text-xs text-red-600 dark:text-rose-400">25 items</span>
+            </div>
+
+            {/* Nested Folders */}
+            <div className="ml-6 space-y-2">
+              <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-rose-50 dark:hover:bg-red-900/10">
+                <div className="w-5 h-5 bg-gradient-to-br from-red-600 to-red-800 rounded flex items-center justify-center">
+                  <LuFolderOpen className="w-3 h-3 text-white" />
+                </div>
+                <span className="text-xs font-medium text-red-700 dark:text-rose-400">VIDEO LOOP INTER</span>
+                <span className="ml-auto text-xs text-red-500 dark:text-rose-500">6 items</span>
+              </div>
+
+              <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-rose-50 dark:hover:bg-red-900/10">
+                <div className="w-5 h-5 bg-gradient-to-br from-red-600 to-red-800 rounded flex items-center justify-center">
+                  <LuFolderOpen className="w-3 h-3 text-white" />
+                </div>
+                <span className="text-xs font-medium text-red-700 dark:text-rose-400">CREATIVE LOOP SEPTEMBER 2025 FRAG</span>
+                <span className="ml-auto text-xs text-red-500 dark:text-rose-500">3 items</span>
+              </div>
+
+              {/* Sample Files */}
+              <div className="ml-6 space-y-1">
+                <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-orange-50 dark:hover:bg-red-800/10">
+                  <div className="w-5 h-5 bg-gradient-to-br from-amber-700 to-amber-900 rounded flex items-center justify-center">
+                    <span className="text-white text-[8px] font-bold">MP4</span>
+                  </div>
+                  <span className="text-xs text-slate-700 dark:text-slate-300">CREATIVE_VIDEO_LOOP_1920x1080px_40s.mp4</span>
+                </div>
+
+                <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-orange-50 dark:hover:bg-red-800/10">
+                  <div className="w-5 h-5 bg-gradient-to-br from-amber-700 to-amber-900 rounded flex items-center justify-center">
+                    <span className="text-white text-[8px] font-bold">MP4</span>
+                  </div>
+                  <span className="text-xs text-slate-700 dark:text-slate-300">CREATIVE_VIDEO_LOOP_2160x3840px_40s.mp4</span>
+                </div>
+
+                <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-orange-50 dark:hover:bg-red-800/10">
+                  <div className="w-5 h-5 bg-gradient-to-br from-amber-700 to-amber-900 rounded flex items-center justify-center">
+                    <span className="text-white text-[8px] font-bold">MP4</span>
+                  </div>
+                  <span className="text-xs text-slate-700 dark:text-slate-300">CREATIVE_VIDEO_LOOP_3840x1080px_40s.mp4</span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-rose-50 dark:hover:bg-red-900/10">
+                <div className="w-5 h-5 bg-gradient-to-br from-red-600 to-red-800 rounded flex items-center justify-center">
+                  <LuFolderOpen className="w-3 h-3 text-white" />
+                </div>
+                <span className="text-xs font-medium text-red-700 dark:text-rose-400">VIDEOS SEPARATELY</span>
+                <span className="ml-auto text-xs text-red-500 dark:text-rose-500">8 items</span>
+              </div>
+
+              <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-rose-50 dark:hover:bg-red-900/10">
+                <div className="w-5 h-5 bg-gradient-to-br from-red-600 to-red-800 rounded flex items-center justify-center">
+                  <LuFolderOpen className="w-3 h-3 text-white" />
+                </div>
+                <span className="text-xs font-medium text-red-700 dark:text-rose-400">1080x1920px</span>
+                <span className="ml-auto text-xs text-red-500 dark:text-rose-500">2 items</span>
+              </div>
+            </div>
+
+            {/* Call to Action */}
+            <div className="mt-6 p-4 bg-gradient-to-r from-rose-100 to-orange-100 dark:from-red-900/30 dark:to-orange-900/30 rounded-xl border border-rose-200 dark:border-rose-700">
+              <div className="text-center">
+                <p className="text-sm font-medium text-red-700 dark:text-rose-300 mb-3">
+                  🎯 This is what your messy folders will look like - organized, clean, and professional!
+                </p>
+                <div className="flex items-center justify-center gap-4 text-xs text-red-600 dark:text-rose-400">
+                  <div className="flex items-center gap-1">
+                    <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                    <span>Auto-organized structure</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                    <span>Beautiful file icons</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <div className="w-2 h-2 bg-pink-500 rounded-full"></div>
+                    <span>Professional PDF reports</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
       {/* Supported File Types */}
       <div className="max-w-4xl mx-auto mt-12">
         <div className="text-center mb-8">
