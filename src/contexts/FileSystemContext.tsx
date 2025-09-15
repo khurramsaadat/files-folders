@@ -129,8 +129,8 @@ function fileSystemReducer(state: FileSystemState, action: FileSystemAction): Fi
         fileSystem: {
           ...state.fileSystem,
           children: state.fileSystem.children.map((item) =>
-            (item as any).id === action.payload.id && (item as any).type === 'file'
-              ? { ...(item as any), ...action.payload.updates }
+            'id' in item && item.id === action.payload.id && item.type === 'file'
+              ? { ...item, ...action.payload.updates }
               : item
           ),
           modifiedAt: new Date(),
@@ -142,8 +142,8 @@ function fileSystemReducer(state: FileSystemState, action: FileSystemAction): Fi
         fileSystem: {
           ...state.fileSystem,
           children: state.fileSystem.children.map((item) =>
-            (item as any).id === action.payload.id && (item as any).type === 'folder'
-              ? { ...(item as any), ...action.payload.updates }
+            'id' in item && item.id === action.payload.id && item.type === 'folder'
+              ? { ...item, ...action.payload.updates }
               : item
           ),
           modifiedAt: new Date(),
@@ -154,7 +154,7 @@ function fileSystemReducer(state: FileSystemState, action: FileSystemAction): Fi
         ...state,
         fileSystem: {
           ...state.fileSystem,
-          children: state.fileSystem.children.filter((item) => (item as any).id !== action.payload),
+          children: state.fileSystem.children.filter((item) => !('id' in item) || item.id !== action.payload),
           modifiedAt: new Date(),
         },
       };
@@ -167,15 +167,15 @@ function fileSystemReducer(state: FileSystemState, action: FileSystemAction): Fi
       return {
         ...state,
         clients: state.clients.map((client) =>
-          (client as any).id === action.payload.id
-            ? { ...(client as any), ...action.payload.updates }
+          client.id === action.payload.id
+            ? { ...client, ...action.payload.updates }
             : client
         ),
       };
     case 'DELETE_CLIENT':
       return {
         ...state,
-        clients: state.clients.filter((client) => (client as any).id !== action.payload),
+        clients: state.clients.filter((client) => client.id !== action.payload),
       };
     default:
       return state;

@@ -211,7 +211,10 @@ function DashboardContent() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {(fileSystem.children.find(f => f.name === 'Favorites' && f.type === 'folder') as any)?.children?.length || 0}
+              {(() => {
+                const favoritesFolder = fileSystem.children.find(f => f.name === 'Favorites' && f.type === 'folder');
+                return (favoritesFolder && 'children' in favoritesFolder) ? favoritesFolder.children.length : 0;
+              })()}
             </div>
             <p className="text-xs text-muted-foreground">
               Starred items

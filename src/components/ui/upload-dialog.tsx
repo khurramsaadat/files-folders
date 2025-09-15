@@ -76,7 +76,7 @@ export function UploadDialog({ isOpen, onClose }: UploadDialogProps) {
   };
 
   const simulateUpload = async (uploadFile: UploadFile): Promise<void> => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       const duration = Math.random() * 2000 + 1000; // 1-3 seconds
       const interval = 50;
       const increment = 100 / (duration / interval);

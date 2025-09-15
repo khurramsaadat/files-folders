@@ -1,75 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Button } from './button';
 import { LuFolderOpen, LuFile, LuChevronRight, LuX, LuSearch, LuHardDrive, LuFileText } from 'react-icons/lu';
 import { formatFileSize } from '@/lib/fileUtils';
 import { PDFExportDialog } from './pdf-export-dialog';
 
-// Format date to match Windows Explorer format
-const formatDate = (date: Date, includeTime: boolean = false): string => {
-  const day = date.getDate();
-  const month = date.toLocaleString('default', { month: 'short' });
-  const year = date.getFullYear().toString().substr(-2);
-  
-  if (includeTime) {
-    const hours = date.getHours();
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-    const displayHours = hours % 12 || 12;
-    return `${day}-${month}-${year} ${displayHours}:${minutes} ${ampm}`;
-  }
-  
-  return `${day}-${month}-${year}`;
-};
 
 
-// Get file type description based on extension
-const getFileType = (fileName: string): string => {
-  const extension = fileName.split('.').pop()?.toLowerCase();
-  
-  switch (extension) {
-    case 'js':
-      return 'JavaScript File';
-    case 'ts':
-      return 'TypeScript File';
-    case 'tsx':
-      return 'TypeScript React File';
-    case 'jsx':
-      return 'JavaScript React File';
-    case 'html':
-      return 'HTML Document';
-    case 'css':
-      return 'CSS File';
-    case 'json':
-      return 'JSON Source File';
-    case 'md':
-      return 'Markdown Source File';
-    case 'txt':
-      return 'Text File';
-    case 'pdf':
-      return 'PDF Document';
-    case 'jpg':
-    case 'jpeg':
-      return 'JPEG Image';
-    case 'png':
-      return 'PNG Image';
-    case 'gif':
-      return 'GIF Image';
-    case 'svg':
-      return 'SVG Image';
-    case 'mp4':
-      return 'MP4 Video';
-    case 'mp3':
-      return 'MP3 Audio';
-    case 'mjs':
-      return 'MJS File';
-    case 'gitignore':
-      return 'gitignore File';
-    default:
-      return extension ? `${extension.toUpperCase()} File` : 'File';
-  }
-};
 
 interface FolderStructure {
   name: string;
@@ -88,7 +26,7 @@ interface FolderViewerProps {
 
 export function FolderViewer({ folderStructure, folderName, onClose }: FolderViewerProps) {
   // Auto-expand all folders to show complete structure
-  const getAllFolderPaths = (items: FolderStructure[], paths: string[] = []): string[] => {
+  const getAllFolderPaths = useCallback((items: FolderStructure[], paths: string[] = []): string[] => {
     items.forEach(item => {
       if (item.type === 'folder') {
         paths.push(item.path);
@@ -98,7 +36,7 @@ export function FolderViewer({ folderStructure, folderName, onClose }: FolderVie
       }
     });
     return paths;
-  };
+  }, []);
 
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState('');
@@ -110,7 +48,7 @@ export function FolderViewer({ folderStructure, folderName, onClose }: FolderVie
   useEffect(() => {
     const allFolderPaths = getAllFolderPaths(folderStructure);
     setExpandedFolders(new Set(allFolderPaths));
-  }, [folderStructure]);
+  }, [folderStructure, getAllFolderPaths]);
 
   const toggleFolder = (path: string) => {
     setExpandedFolders(prev => {
@@ -137,149 +75,8 @@ export function FolderViewer({ folderStructure, folderName, onClose }: FolderVie
     setShowPDFDialog(true);
   };
 
-  const getFileIcon = (fileName: string) => {
-    const extension = fileName.split('.').pop()?.toLowerCase();
-    const iconClass = "h-5 w-5";
-    
-    switch (extension) {
-      case 'pdf':
-        return <LuFile className={`${iconClass} text-red-500`} />;
-      case 'doc':
-      case 'docx':
-        return <LuFile className={`${iconClass} text-blue-500`} />;
-      case 'xls':
-      case 'xlsx':
-        return <LuFile className={`${iconClass} text-green-500`} />;
-      case 'ppt':
-      case 'pptx':
-        return <LuFile className={`${iconClass} text-orange-500`} />;
-      case 'jpg':
-      case 'jpeg':
-      case 'png':
-      case 'gif':
-      case 'svg':
-        return <LuFile className={`${iconClass} text-purple-500`} />;
-      case 'mp4':
-      case 'avi':
-      case 'mov':
-        return <LuFile className={`${iconClass} text-pink-500`} />;
-      case 'mp3':
-      case 'wav':
-      case 'flac':
-        return <LuFile className={`${iconClass} text-indigo-500`} />;
-      case 'zip':
-      case 'rar':
-      case '7z':
-        return <LuFile className={`${iconClass} text-yellow-500`} />;
-      case 'txt':
-      case 'md':
-        return <LuFile className={`${iconClass} text-gray-500`} />;
-      default:
-        return <LuFile className={`${iconClass} text-muted-foreground`} />;
-    }
-  };
 
-  const renderGridItem = (item: FolderStructure) => (
-    <div
-      key={item.path}
-      className="group p-2 rounded border border-border/30 hover:border-primary/30 hover:bg-accent/30 transition-all duration-150 cursor-pointer"
-    >
-      <div className="flex items-center space-x-2">
-        <div className="flex-shrink-0">
-          {item.type === 'folder' ? (
-            <LuFolderOpen className="h-4 w-4 text-blue-500" />
-          ) : (
-            getFileIcon(item.name)
-          )}
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center space-x-2">
-            <span className="text-xs font-medium truncate" title={item.name}>
-              {item.name}
-            </span>
-            {item.type === 'folder' && item.children && (
-              <span className="text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded-full">
-                {item.children.length}
-              </span>
-            )}
-          </div>
-          {item.type === 'file' && (
-            <div className="flex items-center space-x-2 text-xs text-muted-foreground">
-              {item.size && <span>{formatFileSize(item.size)}</span>}
-              {item.modified && <span>• {formatDate(item.modified)}</span>}
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
 
-  // Old Windows Explorer style (kept for compatibility)
-  const renderListItem = (item: FolderStructure, depth: number = 0) => {
-    const isExpanded = expandedFolders.has(item.path);
-    const hasChildren = item.children && item.children.length > 0;
-
-    return (
-      <div key={item.path} className="select-none">
-        <div
-          className={`flex items-center py-0.5 hover:bg-zinc-800 cursor-pointer transition-colors group ${
-            depth > 0 ? '' : ''
-          } ${item.type === 'folder' ? 'font-medium' : ''}`}
-          style={{ paddingLeft: `${depth * 20 + 4}px` }}
-          onClick={() => item.type === 'folder' && toggleFolder(item.path)}
-        >
-          {/* Folder/File Icon with Expand/Collapse Control */}
-          <div className="flex items-center space-x-1 w-6">
-            {item.type === 'folder' && hasChildren ? (
-              isExpanded ? (
-                <span className="text-xs">▼</span>
-              ) : (
-                <span className="text-xs">▶</span>
-              )
-            ) : (
-              <span className="w-3" />
-            )}
-            {item.type === 'folder' ? (
-              <span className="text-yellow-500">📁</span>
-            ) : (
-              <span className="text-zinc-300">
-                {getFileIcon(item.name)}
-              </span>
-            )}
-          </div>
-          
-          {/* Name */}
-          <div className="flex-1 text-xs min-w-[200px]">
-            <span className={`${item.type === 'folder' ? 'font-medium' : ''} truncate max-w-[300px]`}>
-              {item.name}
-            </span>
-          </div>
-          
-          {/* Date modified */}
-          <div className="w-48 text-xs text-muted-foreground whitespace-nowrap">
-            {item.modified ? formatDate(item.modified, true) : ''}
-          </div>
-          
-          {/* Type */}
-          <div className="w-48 text-xs text-muted-foreground whitespace-nowrap">
-            {item.type === 'folder' ? 'File folder' : getFileType(item.name)}
-          </div>
-          
-          {/* Size - Right aligned */}
-          <div className="w-24 text-right text-xs text-muted-foreground font-mono whitespace-nowrap">
-            {item.type === 'file' && item.size ? formatFileSize(item.size) : ''}
-          </div>
-        </div>
-        
-        {/* Nested Children */}
-        {item.type === 'folder' && isExpanded && hasChildren && (
-          <div>
-            {item.children?.map(child => renderListItem(child, depth + 1))}
-          </div>
-        )}
-      </div>
-    );
-  };
 
   // Modern stylized list item renderer
   const renderModernListItem = (item: FolderStructure, depth: number = 0) => {
@@ -292,51 +89,6 @@ export function FolderViewer({ folderStructure, folderName, onClose }: FolderVie
       return parts.length > 1 ? parts.pop()?.toLowerCase() : '';
     };
 
-    // Get modern file icon with colors
-    const getModernFileIcon = (fileName: string) => {
-      const extension = getFileExtension(fileName);
-      
-      switch (extension) {
-        case 'js':
-        case 'jsx':
-          return <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center text-white text-xs font-bold shadow-md">JS</div>;
-        case 'ts':
-        case 'tsx':
-          return <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg flex items-center justify-center text-white text-xs font-bold shadow-md">TS</div>;
-        case 'html':
-          return <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center text-white text-xs font-bold shadow-md">HTML</div>;
-        case 'css':
-          return <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center text-white text-xs font-bold shadow-md">CSS</div>;
-        case 'json':
-          return <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-green-700 rounded-lg flex items-center justify-center text-white text-xs font-bold shadow-md">JSON</div>;
-        case 'md':
-          return <div className="w-8 h-8 bg-gradient-to-br from-gray-600 to-gray-800 rounded-lg flex items-center justify-center text-white text-xs font-bold shadow-md">MD</div>;
-        case 'txt':
-          return <div className="w-8 h-8 bg-gradient-to-br from-gray-400 to-gray-600 rounded-lg flex items-center justify-center text-white text-xs font-bold shadow-md">TXT</div>;
-        case 'png':
-        case 'jpg':
-        case 'jpeg':
-        case 'gif':
-        case 'svg':
-          return <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center text-white text-xs font-bold shadow-md">IMG</div>;
-        case 'pdf':
-          return <div className="w-8 h-8 bg-gradient-to-br from-red-500 to-red-700 rounded-lg flex items-center justify-center text-white text-xs font-bold shadow-md">PDF</div>;
-        case 'zip':
-        case 'rar':
-        case '7z':
-          return <div className="w-8 h-8 bg-gradient-to-br from-yellow-600 to-orange-600 rounded-lg flex items-center justify-center text-white text-xs font-bold shadow-md">ZIP</div>;
-        default:
-          return <div className="w-8 h-8 bg-gradient-to-br from-slate-500 to-slate-700 rounded-lg flex items-center justify-center text-white text-xs font-bold shadow-md">FILE</div>;
-      }
-    };
-
-    const getFolderIcon = () => {
-      return (
-        <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-md">
-          <LuFolderOpen className="w-4 h-4 text-white" />
-        </div>
-      );
-    };
 
     return (
       <div key={item.path} className="select-none">
