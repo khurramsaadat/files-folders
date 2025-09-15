@@ -7,13 +7,26 @@ import { LuFolderOpen, LuUsers, LuClock, LuStar, LuUpload } from 'react-icons/lu
 import { useFileSystem } from '@/contexts/FileSystemContext';
 import { mockFileSystem, mockClients, mockActivities } from '@/lib/mockData';
 import { formatFileSize, formatRelativeDate } from '@/lib/fileUtils';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { ExportDialog } from '@/components/ui/export-dialog';
+import { FolderViewer } from '@/components/ui/folder-viewer';
 import { LuDownload } from 'react-icons/lu';
+
+interface FolderStructure {
+  name: string;
+  path: string;
+  type: 'folder' | 'file';
+  size?: number;
+  modified?: Date;
+  children?: FolderStructure[];
+}
 
 function DashboardContent() {
   const { fileSystem, clients, getStats } = useFileSystem();
   const [showExportDialog, setShowExportDialog] = useState(false);
+  const [selectedFolderStructure, setSelectedFolderStructure] = useState<FolderStructure[] | null>(null);
+  const [selectedFolderName, setSelectedFolderName] = useState<string>('');
+  const folderInputRef = useRef<HTMLInputElement>(null);
   
   // Initialize with mock data
   useEffect(() => {
@@ -23,6 +36,116 @@ function DashboardContent() {
 
   const stats = getStats();
   const recentActivities = mockActivities.slice(0, 3);
+
+  const buildFolderStructure = (files: File[], rootPath: string): FolderStructure[] => {
+    const structure: { [key: string]: FolderStructure } = {};
+
+    files.forEach(file => {
+      const pathParts = file.webkitRelativePath.split('/');
+      const fileName = pathParts[pathParts.length - 1];
+      
+      // Create folder structure
+      let currentPath = '';
+      let currentStructure = structure;
+      
+      pathParts.slice(0, -1).forEach((part, index) => {
+        currentPath = currentPath ? `${currentPath}/${part}` : part;
+        
+        if (!currentStructure[part]) {
+          currentStructure[part] = {
+            name: part,
+            path: currentPath,
+            type: 'folder',
+            children: []
+          };
+        }
+        
+        if (!currentStructure[part].children) {
+          currentStructure[part].children = [];
+        }
+        
+        currentStructure = currentStructure[part].children as { [key: string]: FolderStructure };
+      });
+      
+      // Add file
+      const fileStructure: FolderStructure = {
+        name: fileName,
+        path: file.webkitRelativePath,
+        type: 'file',
+        size: file.size,
+        modified: new Date(file.lastModified)
+      };
+      
+      if (pathParts.length === 1) {
+        // File is in root
+        structure[fileName] = fileStructure;
+      } else {
+        // File is in a subfolder
+        let currentPath = '';
+        let currentStructure = structure;
+        
+        pathParts.slice(0, -1).forEach((part, index) => {
+          currentPath = currentPath ? `${currentPath}/${part}` : part;
+          
+          if (!currentStructure[part]) {
+            currentStructure[part] = {
+              name: part,
+              path: currentPath,
+              type: 'folder',
+              children: []
+            };
+          }
+          
+          if (!currentStructure[part].children) {
+            currentStructure[part].children = [];
+          }
+          
+          currentStructure = currentStructure[part].children as { [key: string]: FolderStructure };
+        });
+        
+        currentStructure[fileName] = fileStructure;
+      }
+    });
+
+    return Object.values(structure);
+  };
+
+  const handleFolderSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files || []);
+    if (files.length === 0) return;
+
+    // Get the folder name from the first file
+    const firstFile = files[0];
+    const folderName = firstFile.webkitRelativePath.split('/')[0];
+    
+    // Build folder structure from files
+    const structure = buildFolderStructure(files, folderName);
+    setSelectedFolderStructure(structure);
+    setSelectedFolderName(folderName);
+  };
+
+  const handleOpenFolder = () => {
+    folderInputRef.current?.click();
+  };
+
+  const handleCloseFolder = () => {
+    setSelectedFolderStructure(null);
+    setSelectedFolderName('');
+  };
+
+  // If a folder is selected, show the folder viewer
+  if (selectedFolderStructure) {
+    return (
+      <div className="space-y-6">
+        <FolderViewer 
+          folderStructure={selectedFolderStructure}
+          folderName={selectedFolderName}
+          onClose={handleCloseFolder}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Welcome Section */}
@@ -108,11 +231,14 @@ function DashboardContent() {
               Common tasks to get you started
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <Button className="w-full justify-start">
-              <LuUpload className="mr-2 h-4 w-4" />
-              Upload Files
-            </Button>
+            <CardContent className="space-y-4">
+              <Button 
+                className="w-full justify-start"
+                onClick={handleOpenFolder}
+              >
+                <LuFolderOpen className="mr-2 h-4 w-4" />
+                Open Folder
+              </Button>
             <Button variant="outline" className="w-full justify-start">
               <LuFolderOpen className="mr-2 h-4 w-4" />
               Create Folder
@@ -164,6 +290,17 @@ function DashboardContent() {
       <ExportDialog 
         isOpen={showExportDialog} 
         onClose={() => setShowExportDialog(false)} 
+      />
+      
+      {/* Hidden folder input */}
+      <input
+        ref={folderInputRef}
+        type="file"
+        webkitdirectory=""
+        directory=""
+        multiple
+        onChange={handleFolderSelect}
+        className="hidden"
       />
     </div>
   );

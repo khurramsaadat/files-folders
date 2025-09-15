@@ -1,0 +1,139 @@
+FILES & FOLDERS EXPORT REPORT
+==================================================
+
+Export Date: Sep 15, 2025, 12:37 PM
+Total Items: 5
+
+CLIENTS:
+--------------------
+• Acme Corporation (active)
+  Email: contact@acme.com
+  Company: Acme Corporation
+  Files: 45, Size: 119.21 MB
+
+• TechStart Inc (active)
+  Email: hello@techstart.com
+  Company: TechStart Inc
+  Files: 23, Size: 63.9 MB
+
+• Design Studio (active)
+  Email: info@designstudio.com
+  Company: Design Studio LLC
+  Files: 78, Size: 223.16 MB
+
+• Global Enterprises (inactive)
+  Email: admin@globalent.com
+  Company: Global Enterprises Ltd
+  Files: 156, Size: 434.88 MB
+
+FILE SYSTEM STRUCTURE:
+------------------------------
+📁 Acme Corporation [Acme Corporation]
+   Description: Acme Corporation project files
+  📄 project-proposal.pdf [Acme Corporation]
+     Size: 1.95 MB
+     Type: pdf
+     Created: Sep 10, 2025, 04:00 AM
+     Tags: proposal, project, important
+     Description: Initial project proposal document
+  📄 wireframes.fig [Acme Corporation]
+     Size: 4.88 MB
+     Type: fig
+     Created: Sep 12, 2025, 04:00 AM
+     Tags: design, wireframes, ui
+     Description: User interface wireframes
+  📄 logo-variations.png [Acme Corporation]
+     Size: 1000 KB
+     Type: png
+     Created: Sep 14, 2025, 04:00 AM
+     Tags: logo, branding, design
+     Description: Logo design variations
+📁 TechStart Inc [TechStart Inc]
+   Description: TechStart Inc project files
+  📄 app-mockup.jpg [TechStart Inc]
+     Size: 2.93 MB
+     Type: jpg
+     Created: Sep 11, 2025, 04:00 AM
+     Tags: mockup, mobile, app
+     Description: Mobile app mockup design
+  📄 user-stories.docx [TechStart Inc]
+     Size: 1.46 MB
+     Type: docx
+     Created: Sep 13, 2025, 04:00 AM
+     Tags: documentation, requirements, user-stories
+     Description: User stories and requirements
+📁 Design Studio [Design Studio]
+   Description: Design Studio project files
+  📄 brand-guidelines.pdf [Design Studio]
+     Size: 7.81 MB
+     Type: pdf
+     Created: Sep 8, 2025, 04:00 AM
+     Tags: branding, guidelines, design
+     Description: Complete brand guidelines document
+  📄 website-screenshots.zip [Design Studio]
+     Size: 24.41 MB
+     Type: zip
+     Created: Sep 12, 2025, 04:00 AM
+     Tags: screenshots, website, archive
+     Description: Website screenshots archive
+📁 Recent Files
+   Description: Recently accessed files
+  📄 logo-variations.png [Acme Corporation]
+     Size: 1000 KB
+     Type: png
+     Created: Sep 14, 2025, 04:00 AM
+     Tags: logo, branding, design
+     Description: Logo design variations
+  📄 user-stories.docx [TechStart Inc]
+     Size: 1.46 MB
+     Type: docx
+     Created: Sep 13, 2025, 04:00 AM
+     Tags: documentation, requirements, user-stories
+     Description: User stories and requirements
+  📄 website-screenshots.zip [Design Studio]
+     Size: 24.41 MB
+     Type: zip
+     Created: Sep 12, 2025, 04:00 AM
+     Tags: screenshots, website, archive
+     Description: Website screenshots archive
+📁 Favorites
+   Description: Starred and favorite files
+  📄 project-proposal.pdf [Acme Corporation]
+     Size: 1.95 MB
+     Type: pdf
+     Created: Sep 10, 2025, 04:00 AM
+     Tags: proposal, project, important
+     Description: Initial project proposal document
+  📄 logo-variations.png [Acme Corporation]
+     Size: 1000 KB
+     Type: png
+     Created: Sep 14, 2025, 04:00 AM
+     Tags: logo, branding, design
+     Description: Logo design variations
+  📄 user-stories.docx [TechStart Inc]
+     Size: 1.46 MB
+     Type: docx
+     Created: Sep 13, 2025, 04:00 AM
+     Tags: documentation, requirements, user-stories
+     Description: User stories and requirements
+  📄 brand-guidelines.pdf [Design Studio]
+     Size: 7.81 MB
+     Type: pdf
+     Created: Sep 8, 2025, 04:00 AM
+     Tags: branding, guidelines, design
+     Description: Complete brand guidelines document
+
+
+STATISTICS:
+--------------------
+Total Files: 14
+Total Folders: 5
+Total Size: 83.5 MB
+
+File Types:
+  pdf: 4
+  fig: 1
+  png: 3
+  jpg: 1
+  docx: 3
+  zip: 2
