@@ -95,7 +95,10 @@ export function Sidebar({ isCollapsed, onToggle, currentPath, onPathChange }: Si
           className={cn(
             'w-full justify-start text-left font-normal',
             level > 0 && 'ml-4',
-            isCollapsed && 'px-2'
+            isCollapsed && 'px-2',
+            isActive 
+              ? 'bg-gradient-to-r from-rose-100 to-pink-100 dark:from-red-800/40 dark:to-rose-800/40 text-red-700 dark:text-rose-200 border-rose-200 dark:border-rose-600' 
+              : 'hover:bg-rose-100/50 dark:hover:bg-red-800/20 text-red-600 dark:text-rose-300 hover:text-red-700 dark:hover:text-rose-200'
           )}
           onClick={() => {
             if (hasChildren) {
@@ -133,22 +136,22 @@ export function Sidebar({ isCollapsed, onToggle, currentPath, onPathChange }: Si
 
   return (
     <aside className={cn(
-      'flex flex-col h-full bg-sidebar border-r transition-all duration-300',
+      'flex flex-col h-full bg-gradient-to-b from-rose-50 to-pink-50 dark:from-red-900/20 dark:to-rose-900/20 border-r border-rose-200 dark:border-rose-700 transition-all duration-300',
       isCollapsed ? 'w-16' : 'w-64'
     )}>
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b">
+      <div className="flex items-center justify-between p-4 border-b border-rose-200 dark:border-rose-700">
         {!isCollapsed && (
-          <h2 className="text-lg font-semibold text-sidebar-foreground">Navigation</h2>
+          <h2 className="text-lg font-semibold bg-gradient-to-r from-red-700 to-red-900 dark:from-rose-200 dark:to-orange-200 bg-clip-text text-transparent">Navigation</h2>
         )}
         <Button
           variant="ghost"
           size="icon"
           onClick={onToggle}
-          className="h-8 w-8"
+          className="h-8 w-8 hover:bg-rose-100 dark:hover:bg-red-800/30"
         >
           <LuChevronRight className={cn(
-            'h-4 w-4 transition-transform',
+            'h-4 w-4 transition-transform text-red-600 dark:text-rose-400',
             isCollapsed && 'rotate-180'
           )} />
         </Button>
@@ -160,11 +163,11 @@ export function Sidebar({ isCollapsed, onToggle, currentPath, onPathChange }: Si
       </nav>
 
       {/* Footer */}
-      <div className="p-4 border-t">
+      <div className="p-4 border-t border-rose-200 dark:border-rose-700">
         <Button
           variant="outline"
           className={cn(
-            'w-full justify-start',
+            'w-full justify-start border-rose-300 dark:border-rose-600 bg-rose-50/50 dark:bg-red-800/10 hover:bg-rose-100 dark:hover:bg-red-800/20 text-red-600 dark:text-rose-300 hover:text-red-700 dark:hover:text-rose-200',
             isCollapsed && 'px-2'
           )}
         >

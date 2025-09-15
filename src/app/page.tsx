@@ -1,16 +1,10 @@
 'use client';
 
 import { MainLayout } from '@/components/layout/MainLayout';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { LuFolderOpen, LuUsers, LuClock, LuStar } from 'react-icons/lu';
-import { useFileSystem } from '@/contexts/FileSystemContext';
-import { mockActivities } from '@/lib/mockData';
-import { formatFileSize, formatRelativeDate } from '@/lib/fileUtils';
+import { LuFolderOpen } from 'react-icons/lu';
 import { useEffect, useState } from 'react';
-import { ExportDialog } from '@/components/ui/export-dialog';
 import { FolderViewer } from '@/components/ui/folder-viewer';
-import { LuDownload } from 'react-icons/lu';
 
 interface FolderStructure {
   name: string;
@@ -21,11 +15,24 @@ interface FolderStructure {
   children?: FolderStructure[];
 }
 
+// File System Access API types
+interface FileSystemEntry {
+  isFile: boolean;
+  isDirectory: boolean;
+  name: string;
+  fullPath: string;
+  file?: (callback: (file: File) => void) => void;
+  createReader?: () => FileSystemDirectoryReader;
+}
+
+interface FileSystemDirectoryReader {
+  readEntries: (callback: (entries: FileSystemEntry[]) => void) => void;
+}
+
 function DashboardContent() {
-  const { fileSystem, clients, getStats } = useFileSystem();
-  const [showExportDialog, setShowExportDialog] = useState(false);
   const [selectedFolderStructure, setSelectedFolderStructure] = useState<FolderStructure[] | null>(null);
   const [selectedFolderName, setSelectedFolderName] = useState<string>('');
+  const [isDragOver, setIsDragOver] = useState(false);
   
   // Initialize with mock data
   useEffect(() => {
@@ -35,8 +42,6 @@ function DashboardContent() {
     // Demo data removed - using real folder selection instead
   }, []);
 
-  const stats = getStats();
-  const recentActivities = mockActivities.slice(0, 3);
 
   const buildFolderStructure = (files: File[]): FolderStructure[] => {
     const fileMap = new Map<string, FolderStructure>();
@@ -126,6 +131,88 @@ function DashboardContent() {
     input.click();
   };
 
+  // Drag and drop handlers
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+
+    const items = Array.from(e.dataTransfer.items);
+    const files: File[] = [];
+
+    // Process dropped items
+    const processItems = async () => {
+      for (const item of items) {
+        if (item.kind === 'file') {
+          const entry = item.webkitGetAsEntry();
+          if (entry) {
+            await processEntry(entry, files);
+          }
+        }
+      }
+
+      if (files.length === 0) return;
+
+      // Get the folder name from the first file or use a default
+      let folderName = 'Dropped Files';
+      if (files[0].webkitRelativePath) {
+        folderName = files[0].webkitRelativePath.split('/')[0];
+      } else if (files.length === 1) {
+        folderName = files[0].name.split('.')[0];
+      }
+
+      // Build folder structure from files
+      const structure = buildFolderStructure(files);
+      setSelectedFolderStructure(structure);
+      setSelectedFolderName(folderName);
+    };
+
+    processItems();
+  };
+
+  // Helper function to recursively process directory entries
+  const processEntry = async (entry: FileSystemEntry, files: File[]): Promise<void> => {
+    if (entry.isFile && entry.file) {
+      const file = await new Promise<File>((resolve) => {
+        entry.file!((file: File) => {
+          // Create a new File object with the full path
+          const newFile = new File([file], file.name, {
+            type: file.type,
+            lastModified: file.lastModified,
+          });
+          // Add webkitRelativePath property
+          Object.defineProperty(newFile, 'webkitRelativePath', {
+            value: entry.fullPath.substring(1), // Remove leading slash
+            writable: false
+          });
+          resolve(newFile);
+        });
+      });
+      files.push(file);
+    } else if (entry.isDirectory && entry.createReader) {
+      const reader = entry.createReader();
+      const entries = await new Promise<FileSystemEntry[]>((resolve) => {
+        reader.readEntries((entries: FileSystemEntry[]) => resolve(entries));
+      });
+      
+      for (const childEntry of entries) {
+        await processEntry(childEntry, files);
+      }
+    }
+  };
+
   const handleCloseFolder = () => {
     setSelectedFolderStructure(null);
     setSelectedFolderName('');
@@ -147,151 +234,51 @@ function DashboardContent() {
   return (
     <div className="space-y-6">
       {/* Welcome Section */}
-      <div className="flex justify-between items-start">
-        <div className="space-y-2">
-          <h1 className="text-3xl font-bold text-foreground">Welcome to Files & Folders</h1>
-          <p className="text-muted-foreground">
-            Manage and organize your client files and folders efficiently
-          </p>
-        </div>
-        <Button 
-          onClick={() => setShowExportDialog(true)}
-          className="flex items-center gap-2"
+      <div className="text-center space-y-2">
+        <h1 className="text-3xl font-bold text-foreground">Welcome to Files & Folders</h1>
+        <p className="text-muted-foreground">
+          Manage and organize your client files and folders efficiently
+        </p>
+      </div>
+
+
+      {/* Drag and Drop Area - Wider with Warm Theme */}
+      <div className="max-w-4xl mx-auto">
+        <div
+          className={`relative border-2 border-dashed rounded-xl p-12 text-center transition-all duration-200 ${
+            isDragOver
+              ? 'border-red-600 bg-gradient-to-br from-rose-50 to-pink-50 dark:bg-gradient-to-br dark:from-red-900/20 dark:to-rose-900/20'
+              : 'border-rose-300 dark:border-rose-600 hover:border-red-500 hover:bg-gradient-to-br hover:from-rose-50 hover:to-orange-50 dark:hover:from-red-800/30 dark:hover:to-rose-700/30'
+          }`}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
         >
-          <LuDownload className="h-4 w-4" />
-          Export Data
-        </Button>
-      </div>
-
-      {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Files</CardTitle>
-            <LuFolderOpen className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalFiles}</div>
-            <p className="text-xs text-muted-foreground">
-              {formatFileSize(stats.totalSize)} total size
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Clients</CardTitle>
-            <LuUsers className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{clients.filter(c => c.status === 'active').length}</div>
-            <p className="text-xs text-muted-foreground">
-              {clients.length} total clients
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Recent Files</CardTitle>
-            <LuClock className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalFolders}</div>
-            <p className="text-xs text-muted-foreground">
-              Folders available
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Favorites</CardTitle>
-            <LuStar className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {(() => {
-                const favoritesFolder = fileSystem.children.find(f => f.name === 'Favorites' && f.type === 'folder');
-                return (favoritesFolder && 'children' in favoritesFolder) ? favoritesFolder.children.length : 0;
-              })()}
+          <div className="space-y-6">
+            <div className="mx-auto w-20 h-20 bg-gradient-to-br from-red-600 to-red-800 rounded-xl flex items-center justify-center shadow-lg">
+              <LuFolderOpen className="w-10 h-10 text-white" />
             </div>
-            <p className="text-xs text-muted-foreground">
-              Starred items
-            </p>
-          </CardContent>
-        </Card>
-      </div>
+            
+            <div className="space-y-3">
+              <h3 className="text-2xl font-semibold bg-gradient-to-r from-red-700 to-red-900 dark:from-rose-200 dark:to-orange-200 bg-clip-text text-transparent">
+                {isDragOver ? 'Drop your files here' : 'Drag & drop files or folders'}
+              </h3>
+              <p className="text-base text-red-600 dark:text-rose-400">
+                {isDragOver ? 'Release to upload' : 'or click the button below to browse'}
+              </p>
+            </div>
 
-      {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
-            <CardDescription>
-              Common tasks to get you started
-            </CardDescription>
-          </CardHeader>
-            <CardContent className="space-y-4">
-              <Button 
-                className="w-full justify-start"
-                onClick={handleOpenFolder}
-              >
-                <LuFolderOpen className="mr-2 h-4 w-4" />
-                Open Folder
-              </Button>
-            <Button variant="outline" className="w-full justify-start">
-              <LuFolderOpen className="mr-2 h-4 w-4" />
-              Create Folder
-            </Button>
-            <Button variant="outline" className="w-full justify-start">
-              <LuUsers className="mr-2 h-4 w-4" />
-              Add Client
-            </Button>
             <Button 
-              variant="outline" 
-              className="w-full justify-start"
-              onClick={() => setShowExportDialog(true)}
+              size="lg"
+              className="bg-gradient-to-r from-red-600 to-red-800 hover:from-red-700 hover:to-red-900 text-white font-semibold py-4 px-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200" 
+              onClick={handleOpenFolder}
             >
-              <LuDownload className="mr-2 h-4 w-4" />
-              Export All Data
+              <LuFolderOpen className="mr-3 h-6 w-6" />
+              Browse Files / Folders
             </Button>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
-            <CardDescription>
-              Your latest file operations
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {recentActivities.map((activity, index) => (
-                <div key={activity.id} className="flex items-center space-x-4">
-                  <div className={`w-2 h-2 rounded-full ${
-                    index === 0 ? 'bg-primary' : 
-                    index === 1 ? 'bg-secondary' : 'bg-accent'
-                  }`}></div>
-                  <div className="flex-1 space-y-1">
-                    <p className="text-sm font-medium">{activity.description}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {formatRelativeDate(activity.timestamp)}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
-      
-      {/* Export Dialog */}
-      <ExportDialog 
-        isOpen={showExportDialog} 
-        onClose={() => setShowExportDialog(false)} 
-      />
       
       {/* Dynamic folder input created on demand - no upload dialogs */}
     </div>

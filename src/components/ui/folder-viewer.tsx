@@ -95,11 +95,11 @@ export function FolderViewer({ folderStructure, folderName, onClose }: FolderVie
         <div
           className={`flex items-center p-2 rounded-lg transition-all duration-200 group cursor-pointer
             ${item.type === 'folder' 
-              ? 'hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 dark:hover:from-blue-900/20 dark:hover:to-indigo-900/20' 
-              : 'hover:bg-gradient-to-r hover:from-slate-50 hover:to-slate-100 dark:hover:from-slate-800/30 dark:hover:to-slate-700/30'
+              ? 'hover:bg-gradient-to-r hover:from-rose-50 hover:to-pink-50 dark:hover:from-red-900/20 dark:hover:to-rose-900/20' 
+              : 'hover:bg-gradient-to-r hover:from-orange-50 hover:to-rose-50 dark:hover:from-red-800/30 dark:hover:to-orange-800/30'
             }
-            border border-transparent hover:border-slate-200 dark:hover:border-slate-700
-            hover:shadow-md hover:shadow-slate-200/50 dark:hover:shadow-slate-900/50
+            border border-transparent hover:border-rose-200 dark:hover:border-rose-700
+            hover:shadow-md hover:shadow-rose-200/50 dark:hover:shadow-red-900/50
           `}
           style={{ paddingLeft: `${depth * 16 + 4}px` }}
           onClick={() => item.type === 'folder' && toggleFolder(item.path)}
@@ -116,21 +116,24 @@ export function FolderViewer({ folderStructure, folderName, onClose }: FolderVie
           {/* File/Folder Icon - Smaller */}
           <div className="mr-3">
             {item.type === 'folder' ? (
-              <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-sm">
+              <div className="w-6 h-6 bg-gradient-to-br from-red-600 to-red-800 rounded-lg flex items-center justify-center shadow-sm">
                 <LuFolderOpen className="w-3 h-3 text-white" />
               </div>
             ) : (
-              <div className={`w-6 h-6 rounded-lg flex items-center justify-center shadow-sm text-white text-xs font-bold ${
-                getFileExtension(item.name) === 'js' || getFileExtension(item.name) === 'jsx' ? 'bg-gradient-to-br from-yellow-400 to-yellow-600' :
-                getFileExtension(item.name) === 'ts' || getFileExtension(item.name) === 'tsx' ? 'bg-gradient-to-br from-blue-500 to-blue-700' :
+              <div className={`w-6 h-6 rounded-lg flex items-center justify-center shadow-sm text-white font-bold ${
+                ['mp4', 'avi', 'mov', 'mkv', 'wmv', 'flv', 'webm', 'm4v'].includes(getFileExtension(item.name) || '') ? 'text-[8px]' : 'text-xs'
+              } ${
+                getFileExtension(item.name) === 'js' || getFileExtension(item.name) === 'jsx' ? 'bg-gradient-to-br from-amber-500 to-orange-600' :
+                getFileExtension(item.name) === 'ts' || getFileExtension(item.name) === 'tsx' ? 'bg-gradient-to-br from-red-500 to-red-700' :
                 getFileExtension(item.name) === 'html' ? 'bg-gradient-to-br from-orange-500 to-red-600' :
-                getFileExtension(item.name) === 'css' ? 'bg-gradient-to-br from-blue-400 to-blue-600' :
-                getFileExtension(item.name) === 'json' ? 'bg-gradient-to-br from-green-500 to-green-700' :
-                getFileExtension(item.name) === 'md' ? 'bg-gradient-to-br from-gray-600 to-gray-800' :
-                getFileExtension(item.name) === 'txt' ? 'bg-gradient-to-br from-gray-400 to-gray-600' :
-                getFileExtension(item.name) === 'ico' ? 'bg-gradient-to-br from-slate-500 to-slate-700' :
-                ['png', 'jpg', 'jpeg', 'gif', 'svg'].includes(getFileExtension(item.name) || '') ? 'bg-gradient-to-br from-purple-500 to-pink-600' :
-                'bg-gradient-to-br from-slate-500 to-slate-700'
+                getFileExtension(item.name) === 'css' ? 'bg-gradient-to-br from-pink-500 to-rose-600' :
+                getFileExtension(item.name) === 'json' ? 'bg-gradient-to-br from-yellow-600 to-orange-700' :
+                getFileExtension(item.name) === 'md' ? 'bg-gradient-to-br from-red-600 to-red-800' :
+                getFileExtension(item.name) === 'txt' ? 'bg-gradient-to-br from-rose-500 to-pink-600' :
+                getFileExtension(item.name) === 'ico' ? 'bg-gradient-to-br from-orange-600 to-red-700' :
+                ['png', 'jpg', 'jpeg', 'gif', 'svg'].includes(getFileExtension(item.name) || '') ? 'bg-gradient-to-br from-pink-500 to-rose-600' :
+                ['mp4', 'avi', 'mov', 'mkv', 'wmv', 'flv', 'webm', 'm4v'].includes(getFileExtension(item.name) || '') ? 'bg-gradient-to-br from-amber-700 to-amber-900' :
+                'bg-gradient-to-br from-red-500 to-red-700'
               }`}>
                 {getFileExtension(item.name) === 'js' || getFileExtension(item.name) === 'jsx' ? 'JS' :
                  getFileExtension(item.name) === 'ts' || getFileExtension(item.name) === 'tsx' ? 'TS' :
@@ -141,6 +144,7 @@ export function FolderViewer({ folderStructure, folderName, onClose }: FolderVie
                  getFileExtension(item.name) === 'txt' ? 'T' :
                  getFileExtension(item.name) === 'ico' ? 'I' :
                  ['png', 'jpg', 'jpeg', 'gif', 'svg'].includes(getFileExtension(item.name) || '') ? 'IMG' :
+                 ['mp4', 'avi', 'mov', 'mkv', 'wmv', 'flv', 'webm', 'm4v'].includes(getFileExtension(item.name) || '') ? 'MP4' :
                  'F'}
               </div>
             )}
@@ -148,20 +152,13 @@ export function FolderViewer({ folderStructure, folderName, onClose }: FolderVie
           
           {/* Name with Extension - Smaller Font */}
           <div className="flex-1 min-w-0">
-            <div className="flex items-center space-x-2">
-              <span className={`text-xs font-medium truncate ${
-                item.type === 'folder' 
-                  ? 'text-slate-700 dark:text-slate-200' 
-                  : 'text-slate-600 dark:text-slate-300'
-              }`}>
-                {item.type === 'file' ? item.name.split('.').slice(0, -1).join('.') || item.name : item.name}
-              </span>
-              {item.type === 'file' && getFileExtension(item.name) && (
-                <span className="px-1.5 py-0.5 text-xs font-medium bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-md">
-                  .{getFileExtension(item.name)}
-                </span>
-              )}
-            </div>
+            <span className={`text-xs font-medium truncate ${
+              item.type === 'folder' 
+                ? 'text-slate-700 dark:text-slate-200' 
+                : 'text-slate-600 dark:text-slate-300'
+            }`}>
+              {item.name}
+            </span>
           </div>
         </div>
         
@@ -251,28 +248,28 @@ export function FolderViewer({ folderStructure, folderName, onClose }: FolderVie
   return (
     <div className="space-y-4">
       {/* Modern Header - Extra Compact */}
-      <div className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 dark:from-slate-800 dark:via-slate-900 dark:to-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 shadow-lg">
+      <div className="bg-gradient-to-r from-rose-50 via-pink-50 to-orange-50 dark:from-red-800/20 dark:via-rose-800/20 dark:to-orange-800/20 rounded-xl p-4 border border-rose-200 dark:border-rose-700 shadow-lg">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <div className="relative">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+              <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-red-800 rounded-xl flex items-center justify-center shadow-lg">
                 <LuFolderOpen className="h-6 w-6 text-white" />
               </div>
-              <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full flex items-center justify-center shadow-md">
+              <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center shadow-md">
                 <span className="text-white text-xs font-bold">{stats.totalFiles}</span>
               </div>
             </div>
             <div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-slate-700 to-slate-900 dark:from-slate-200 dark:to-slate-400 bg-clip-text text-transparent">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-red-700 to-red-900 dark:from-rose-200 dark:to-orange-200 bg-clip-text text-transparent">
                 {folderName}
               </h1>
               <div className="flex items-center space-x-3 mt-1">
-                <div className="flex items-center space-x-1 text-slate-600 dark:text-slate-400">
-                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+                <div className="flex items-center space-x-1 text-red-600 dark:text-rose-400">
+                  <div className="w-1.5 h-1.5 bg-red-500 rounded-full"></div>
                   <span className="text-xs font-medium">{stats.totalFiles} files</span>
                 </div>
-                <div className="flex items-center space-x-1 text-slate-600 dark:text-slate-400">
-                  <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full"></div>
+                <div className="flex items-center space-x-1 text-red-600 dark:text-rose-400">
+                  <div className="w-1.5 h-1.5 bg-orange-500 rounded-full"></div>
                   <span className="text-xs font-medium">{stats.totalFolders} folders</span>
                 </div>
               </div>
@@ -365,19 +362,19 @@ export function FolderViewer({ folderStructure, folderName, onClose }: FolderVie
       </div>
 
       {/* Modern File Explorer */}
-      <div className="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl overflow-hidden">
+      <div className="bg-gradient-to-br from-rose-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 border border-rose-200 dark:border-rose-800 rounded-2xl shadow-xl overflow-hidden">
         <div className="p-0">
           {filteredAndSortedItems().length > 0 ? (
-            <div className="max-h-[70vh] overflow-y-auto bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm">
+            <div className="max-h-[70vh] overflow-y-auto bg-white/80 dark:bg-red-900/80 backdrop-blur-sm">
               {/* Modern File List - Compact */}
               <div className="p-3 space-y-0.5">
                 {filteredAndSortedItems().map(item => renderModernListItem(item))}
               </div>
             </div>
           ) : (
-            <div className="text-center py-16 text-slate-500 dark:text-slate-400">
-              <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 rounded-2xl flex items-center justify-center">
-                <LuFolderOpen className="h-10 w-10 text-blue-500 dark:text-blue-400" />
+            <div className="text-center py-16 text-red-600 dark:text-rose-400">
+              <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-rose-100 to-pink-100 dark:from-red-900/30 dark:to-rose-900/30 rounded-2xl flex items-center justify-center">
+                <LuFolderOpen className="h-10 w-10 text-red-500 dark:text-rose-400" />
               </div>
               <h3 className="text-xl font-semibold mb-3 text-slate-700 dark:text-slate-300">
                 {searchQuery ? 'No matching items found' : 'No files or folders found'}
@@ -392,37 +389,37 @@ export function FolderViewer({ folderStructure, folderName, onClose }: FolderVie
 
       {/* Modern Stats - Compact */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl p-4 border border-blue-200 dark:border-blue-700/30 shadow-lg hover:shadow-xl transition-all duration-200">
+        <div className="bg-gradient-to-br from-rose-50 to-pink-100 dark:from-red-900/20 dark:to-rose-800/20 rounded-xl p-4 border border-rose-200 dark:border-rose-700/30 shadow-lg hover:shadow-xl transition-all duration-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">{stats.totalFiles}</p>
-              <p className="text-sm font-medium text-blue-600/70 dark:text-blue-400/70 mt-1">Total Files</p>
+              <p className="text-3xl font-bold text-red-600 dark:text-rose-400">{stats.totalFiles}</p>
+              <p className="text-sm font-medium text-red-600/70 dark:text-rose-400/70 mt-1">Total Files</p>
             </div>
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-md">
+            <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center shadow-md">
               <LuFile className="h-6 w-6 text-white" />
             </div>
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 dark:from-indigo-900/20 dark:to-indigo-800/20 rounded-xl p-4 border border-indigo-200 dark:border-indigo-700/30 shadow-lg hover:shadow-xl transition-all duration-200">
+        <div className="bg-gradient-to-br from-orange-50 to-red-100 dark:from-orange-900/20 dark:to-red-800/20 rounded-xl p-4 border border-orange-200 dark:border-red-700/30 shadow-lg hover:shadow-xl transition-all duration-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-3xl font-bold text-indigo-600 dark:text-indigo-400">{stats.totalFolders}</p>
-              <p className="text-sm font-medium text-indigo-600/70 dark:text-indigo-400/70 mt-1">Total Folders</p>
+              <p className="text-3xl font-bold text-orange-600 dark:text-orange-400">{stats.totalFolders}</p>
+              <p className="text-sm font-medium text-orange-600/70 dark:text-orange-400/70 mt-1">Total Folders</p>
             </div>
-            <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-md">
+            <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl flex items-center justify-center shadow-md">
               <LuFolderOpen className="h-6 w-6 text-white" />
             </div>
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-xl p-4 border border-purple-200 dark:border-purple-700/30 shadow-lg hover:shadow-xl transition-all duration-200">
+        <div className="bg-gradient-to-br from-pink-50 to-rose-100 dark:from-pink-900/20 dark:to-rose-800/20 rounded-xl p-4 border border-pink-200 dark:border-rose-700/30 shadow-lg hover:shadow-xl transition-all duration-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-3xl font-bold text-purple-600 dark:text-purple-400">{formatFileSize(stats.totalSize)}</p>
-              <p className="text-sm font-medium text-purple-600/70 dark:text-purple-400/70 mt-1">Total Size</p>
+              <p className="text-3xl font-bold text-pink-600 dark:text-pink-400">{formatFileSize(stats.totalSize)}</p>
+              <p className="text-sm font-medium text-pink-600/70 dark:text-pink-400/70 mt-1">Total Size</p>
             </div>
-            <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-md">
+            <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-rose-600 rounded-xl flex items-center justify-center shadow-md">
               <LuHardDrive className="h-6 w-6 text-white" />
             </div>
           </div>

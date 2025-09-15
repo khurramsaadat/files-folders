@@ -19,6 +19,20 @@ export interface PDFExportOptions {
   notes?: string;
 }
 
+// Helper function to count total files (excluding folders)
+function countTotalFiles(structure: FolderStructure[]): number {
+  let count = 0;
+  structure.forEach(item => {
+    if (item.type === 'file') {
+      count++;
+    }
+    if (item.children) {
+      count += countTotalFiles(item.children);
+    }
+  });
+  return count;
+}
+
 // Generate Professional PDF Report for Client
 export function generateClientPDF(
   folderStructure: FolderStructure[],
@@ -52,12 +66,12 @@ export function generateClientPDF(
         .header {
             text-align: center;
             margin-bottom: 40px;
-            border-bottom: 3px solid #2563eb;
+            border-bottom: 3px solid #7c2d12;
             padding-bottom: 20px;
         }
         
         .header h1 {
-            color: #1e40af;
+            color: #7c2d12;
             font-size: 28px;
             margin-bottom: 10px;
         }
@@ -73,7 +87,7 @@ export function generateClientPDF(
             padding: 20px;
             border-radius: 12px;
             margin-bottom: 30px;
-            border-left: 4px solid #2563eb;
+            border-left: 4px solid #7c2d12;
         }
         
         .project-info h2 {
@@ -118,7 +132,7 @@ export function generateClientPDF(
         }
         
         .structure-header {
-            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            background: linear-gradient(135deg, #7c2d12 0%, #6b2713 100%);
             color: white;
             padding: 20px;
             font-size: 18px;
@@ -161,15 +175,15 @@ export function generateClientPDF(
         }
         
         .folder-icon {
-            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            background: linear-gradient(135deg, #7c2d12 0%, #6b2713 100%);
         }
         
         .file-icon {
-            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+            background: linear-gradient(135deg, #a16207 0%, #7c2d12 100%);
         }
         
         .file-icon.video {
-            background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+            background: linear-gradient(135deg, #a16207 0%, #7c2d12 100%);
         }
         
         .file-icon.image {
@@ -187,7 +201,7 @@ export function generateClientPDF(
         }
         
         .folder-name {
-            color: #1e40af;
+            color: #7c2d12;
             font-weight: 600;
         }
         
@@ -210,7 +224,7 @@ export function generateClientPDF(
         }
         
         .summary h3 {
-            color: #1e40af;
+            color: #7c2d12;
             margin-bottom: 15px;
             font-size: 18px;
         }
@@ -232,7 +246,7 @@ export function generateClientPDF(
         .summary-number {
             font-size: 24px;
             font-weight: bold;
-            color: #1e40af;
+            color: #7c2d12;
             margin-bottom: 5px;
         }
         
@@ -262,7 +276,7 @@ export function generateClientPDF(
 </head>
 <body>
     <div class="header">
-        <h1>📁 Project Files Report</h1>
+        <h1>📁 ${options.projectName}</h1>
         <div class="subtitle">Professional File Structure Overview</div>
         <div class="subtitle">Generated on ${timeString}</div>
     </div>
@@ -284,10 +298,10 @@ export function generateClientPDF(
                 <div class="info-label">Report Date</div>
                 <div class="info-value">${timestamp}</div>
             </div>
-            <div class="info-item">
-                <div class="info-label">Total Items</div>
-                <div class="info-value">${countTotalItems(folderStructure)} items</div>
-            </div>
+                    <div class="info-item">
+                        <div class="info-label">Total Files</div>
+                        <div class="info-value">${countTotalFiles(folderStructure)} files</div>
+                    </div>
         </div>
         ${options.notes ? `
         <div style="margin-top: 15px; padding: 12px; background: white; border-radius: 8px;">
@@ -318,23 +332,11 @@ export function generateClientPDF(
   return htmlContent;
 }
 
-// Helper function to count total items
-function countTotalItems(structure: FolderStructure[]): number {
-  let count = 0;
-  structure.forEach(item => {
-    count++;
-    if (item.children) {
-      count += countTotalItems(item.children);
-    }
-  });
-  return count;
-}
-
 // Helper function to get file icon class
 function getFileIconClass(filename: string): string {
   const extension = filename.split('.').pop()?.toLowerCase() || '';
   
-  if (['mp4', 'avi', 'mov', 'wmv', 'flv', 'mkv'].includes(extension)) {
+  if (['mp4', 'avi', 'mov', 'wmv', 'flv', 'mkv', 'webm', 'm4v'].includes(extension)) {
     return 'video';
   } else if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg'].includes(extension)) {
     return 'image';
@@ -352,6 +354,11 @@ function getFileIconText(filename: string): string {
     case 'mp4': return 'MP4';
     case 'avi': return 'AVI';
     case 'mov': return 'MOV';
+    case 'wmv': return 'WMV';
+    case 'flv': return 'FLV';
+    case 'mkv': return 'MKV';
+    case 'webm': return 'WEBM';
+    case 'm4v': return 'M4V';
     case 'jpg': case 'jpeg': return 'JPG';
     case 'png': return 'PNG';
     case 'pdf': return 'PDF';
