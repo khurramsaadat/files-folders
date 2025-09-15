@@ -3,25 +3,25 @@
 import { useState } from 'react';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
+import { FileSystemProvider, useFileSystem } from '@/contexts/FileSystemContext';
 
 interface MainLayoutProps {
   children: React.ReactNode;
 }
 
-export function MainLayout({ children }: MainLayoutProps) {
+function MainLayoutContent({ children }: MainLayoutProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [currentPath, setCurrentPath] = useState('/');
+  const { searchQuery, setSearchQuery, currentPath, setCurrentPath, search } = useFileSystem();
 
   const handleSearch = (query: string) => {
-    console.log('Searching for:', query);
-    // TODO: Implement search functionality
+    setSearchQuery(query);
+    const results = search(query);
+    console.log('Search results:', results);
   };
 
   const handlePathChange = (path: string) => {
     setCurrentPath(path);
     console.log('Navigating to:', path);
-    // TODO: Implement navigation
   };
 
   return (
@@ -50,5 +50,13 @@ export function MainLayout({ children }: MainLayoutProps) {
         </main>
       </div>
     </div>
+  );
+}
+
+export function MainLayout({ children }: MainLayoutProps) {
+  return (
+    <FileSystemProvider>
+      <MainLayoutContent>{children}</MainLayoutContent>
+    </FileSystemProvider>
   );
 }
