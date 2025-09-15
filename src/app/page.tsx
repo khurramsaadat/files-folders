@@ -1,6 +1,5 @@
 'use client';
 
-import { MainLayout } from '@/components/layout/MainLayout';
 import { Button } from '@/components/ui/button';
 import { LuFolderOpen } from 'react-icons/lu';
 import { useEffect, useState } from 'react';
@@ -234,10 +233,12 @@ function DashboardContent() {
   return (
     <div className="space-y-6">
       {/* Welcome Section */}
-      <div className="text-center space-y-2">
-        <h1 className="text-3xl font-bold text-foreground">Welcome to Files & Folders</h1>
-        <p className="text-muted-foreground">
-          Manage and organize your client files and folders efficiently
+      <div className="text-center space-y-3">
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-red-700 to-red-900 dark:from-rose-200 dark:to-orange-200 bg-clip-text text-transparent">
+          Welcome to Files & Folders
+        </h1>
+        <p className="text-lg text-red-600 dark:text-rose-400 max-w-2xl mx-auto">
+          Organize, explore, and share your project files with beautiful visual reports
         </p>
       </div>
 
@@ -279,6 +280,164 @@ function DashboardContent() {
           </div>
         </div>
       </div>
+
+      {/* Supported File Types */}
+      <div className="max-w-4xl mx-auto mt-12">
+        <div className="text-center mb-8">
+          <h3 className="text-xl font-semibold bg-gradient-to-r from-red-700 to-red-900 dark:from-rose-200 dark:to-orange-200 bg-clip-text text-transparent mb-2">
+            Supported File Types
+          </h3>
+          <p className="text-sm text-red-600 dark:text-rose-400">
+            Organize and manage all your project files with beautiful icons
+          </p>
+        </div>
+        
+        <div className="grid grid-cols-4 md:grid-cols-8 lg:grid-cols-12 gap-4 p-6 bg-gradient-to-br from-rose-50 to-orange-50 dark:from-red-900/10 dark:to-orange-900/10 rounded-xl border border-rose-200 dark:border-rose-800">
+          {/* JavaScript */}
+          <div className="flex flex-col items-center space-y-2">
+            <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg flex items-center justify-center shadow-md">
+              <span className="text-white text-xs font-bold">JS</span>
+            </div>
+            <span className="text-xs text-amber-700 dark:text-amber-400 font-medium">JavaScript</span>
+          </div>
+
+          {/* TypeScript */}
+          <div className="flex flex-col items-center space-y-2">
+            <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-red-700 rounded-lg flex items-center justify-center shadow-md">
+              <span className="text-white text-xs font-bold">TS</span>
+            </div>
+            <span className="text-xs text-red-700 dark:text-red-400 font-medium">TypeScript</span>
+          </div>
+
+          {/* HTML */}
+          <div className="flex flex-col items-center space-y-2">
+            <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center shadow-md">
+              <span className="text-white text-xs font-bold">H</span>
+            </div>
+            <span className="text-xs text-orange-700 dark:text-orange-400 font-medium">HTML</span>
+          </div>
+
+          {/* CSS */}
+          <div className="flex flex-col items-center space-y-2">
+            <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-rose-600 rounded-lg flex items-center justify-center shadow-md">
+              <span className="text-white text-xs font-bold">C</span>
+            </div>
+            <span className="text-xs text-pink-700 dark:text-pink-400 font-medium">CSS</span>
+          </div>
+
+          {/* JSON */}
+          <div className="flex flex-col items-center space-y-2">
+            <div className="w-12 h-12 bg-gradient-to-br from-yellow-600 to-orange-700 rounded-lg flex items-center justify-center shadow-md">
+              <span className="text-white text-xs font-bold">J</span>
+            </div>
+            <span className="text-xs text-yellow-700 dark:text-yellow-400 font-medium">JSON</span>
+          </div>
+
+          {/* Markdown */}
+          <div className="flex flex-col items-center space-y-2">
+            <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-red-800 rounded-lg flex items-center justify-center shadow-md">
+              <span className="text-white text-xs font-bold">M</span>
+            </div>
+            <span className="text-xs text-red-700 dark:text-red-400 font-medium">Markdown</span>
+          </div>
+
+          {/* Text */}
+          <div className="flex flex-col items-center space-y-2">
+            <div className="w-12 h-12 bg-gradient-to-br from-rose-500 to-pink-600 rounded-lg flex items-center justify-center shadow-md">
+              <span className="text-white text-xs font-bold">T</span>
+            </div>
+            <span className="text-xs text-rose-700 dark:text-rose-400 font-medium">Text</span>
+          </div>
+
+          {/* PNG */}
+          <div className="flex flex-col items-center space-y-2">
+            <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center shadow-md">
+              <span className="text-white text-[8px] font-bold">PNG</span>
+            </div>
+            <span className="text-xs text-orange-700 dark:text-orange-400 font-medium">PNG</span>
+          </div>
+
+          {/* JPG */}
+          <div className="flex flex-col items-center space-y-2">
+            <div className="w-12 h-12 bg-gradient-to-br from-amber-600 to-orange-700 rounded-lg flex items-center justify-center shadow-md">
+              <span className="text-white text-[8px] font-bold">JPG</span>
+            </div>
+            <span className="text-xs text-amber-700 dark:text-amber-400 font-medium">JPG</span>
+          </div>
+
+          {/* SVG */}
+          <div className="flex flex-col items-center space-y-2">
+            <div className="w-12 h-12 bg-gradient-to-br from-rose-600 to-pink-700 rounded-lg flex items-center justify-center shadow-md">
+              <span className="text-white text-[8px] font-bold">SVG</span>
+            </div>
+            <span className="text-xs text-rose-700 dark:text-rose-400 font-medium">SVG</span>
+          </div>
+
+          {/* GIF */}
+          <div className="flex flex-col items-center space-y-2">
+            <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-rose-600 rounded-lg flex items-center justify-center shadow-md">
+              <span className="text-white text-[8px] font-bold">GIF</span>
+            </div>
+            <span className="text-xs text-pink-700 dark:text-pink-400 font-medium">GIF</span>
+          </div>
+
+          {/* MP4 */}
+          <div className="flex flex-col items-center space-y-2">
+            <div className="w-12 h-12 bg-gradient-to-br from-amber-700 to-amber-900 rounded-lg flex items-center justify-center shadow-md">
+              <span className="text-white text-[8px] font-bold">MP4</span>
+            </div>
+            <span className="text-xs text-amber-800 dark:text-amber-400 font-medium">MP4</span>
+          </div>
+
+          {/* MOV */}
+          <div className="flex flex-col items-center space-y-2">
+            <div className="w-12 h-12 bg-gradient-to-br from-orange-600 to-red-700 rounded-lg flex items-center justify-center shadow-md">
+              <span className="text-white text-[8px] font-bold">MOV</span>
+            </div>
+            <span className="text-xs text-orange-700 dark:text-orange-400 font-medium">MOV</span>
+          </div>
+
+          {/* AVI */}
+          <div className="flex flex-col items-center space-y-2">
+            <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-red-800 rounded-lg flex items-center justify-center shadow-md">
+              <span className="text-white text-[8px] font-bold">AVI</span>
+            </div>
+            <span className="text-xs text-red-700 dark:text-red-400 font-medium">AVI</span>
+          </div>
+
+          {/* MKV */}
+          <div className="flex flex-col items-center space-y-2">
+            <div className="w-12 h-12 bg-gradient-to-br from-rose-600 to-pink-700 rounded-lg flex items-center justify-center shadow-md">
+              <span className="text-white text-[8px] font-bold">MKV</span>
+            </div>
+            <span className="text-xs text-rose-700 dark:text-rose-400 font-medium">MKV</span>
+          </div>
+
+          {/* Icons */}
+          <div className="flex flex-col items-center space-y-2">
+            <div className="w-12 h-12 bg-gradient-to-br from-orange-600 to-red-700 rounded-lg flex items-center justify-center shadow-md">
+              <span className="text-white text-xs font-bold">I</span>
+            </div>
+            <span className="text-xs text-orange-700 dark:text-orange-400 font-medium">Icons</span>
+          </div>
+
+          {/* Folders */}
+          <div className="flex flex-col items-center space-y-2">
+            <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-red-800 rounded-lg flex items-center justify-center shadow-md">
+              <LuFolderOpen className="w-6 h-6 text-white" />
+            </div>
+            <span className="text-xs text-red-700 dark:text-red-400 font-medium">Folders</span>
+          </div>
+
+          {/* More Files */}
+          <div className="flex flex-col items-center space-y-2">
+            <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-red-700 rounded-lg flex items-center justify-center shadow-md">
+              <span className="text-white text-xs font-bold">+</span>
+            </div>
+            <span className="text-xs text-red-700 dark:text-red-400 font-medium">More</span>
+          </div>
+        </div>
+      </div>
       
       {/* Dynamic folder input created on demand - no upload dialogs */}
     </div>
@@ -286,9 +445,5 @@ function DashboardContent() {
 }
 
 export default function Home() {
-  return (
-    <MainLayout>
-      <DashboardContent />
-    </MainLayout>
-  );
+  return <DashboardContent />;
 }

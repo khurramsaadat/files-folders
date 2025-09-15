@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Button } from './button';
 import { LuFolderOpen, LuFile, LuChevronRight, LuX, LuSearch, LuHardDrive, LuFileText } from 'react-icons/lu';
 import { formatFileSize } from '@/lib/fileUtils';
@@ -197,23 +197,29 @@ export function FolderViewer({ folderStructure, folderName, onClose }: FolderVie
 
   const stats = getTotalStats();
 
-  const filteredAndSortedItems = () => {
+  const filteredAndSortedItems = useMemo(() => {
     let items = [...folderStructure];
     
     // Filter by search query
-    if (searchQuery) {
+    if (searchQuery.trim()) {
       const filterItems = (items: FolderStructure[]): FolderStructure[] => {
-        return items.filter(item => {
-          const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase());
+        return items.reduce((filtered: FolderStructure[], item) => {
+          const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase().trim());
+          
           if (item.type === 'folder' && item.children) {
             const filteredChildren = filterItems(item.children);
-            return matchesSearch || filteredChildren.length > 0;
+            if (matchesSearch || filteredChildren.length > 0) {
+              filtered.push({
+                ...item,
+                children: filteredChildren
+              });
+            }
+          } else if (matchesSearch) {
+            filtered.push(item);
           }
-          return matchesSearch;
-        }).map(item => ({
-          ...item,
-          children: item.type === 'folder' && item.children ? filterItems(item.children) : item.children
-        }));
+          
+          return filtered;
+        }, []);
       };
       items = filterItems(items);
     }
@@ -243,7 +249,7 @@ export function FolderViewer({ folderStructure, folderName, onClose }: FolderVie
     };
     
     return sortItems(items);
-  };
+  }, [folderStructure, searchQuery, sortBy, sortOrder]);
 
   return (
     <div className="space-y-4">
@@ -364,11 +370,11 @@ export function FolderViewer({ folderStructure, folderName, onClose }: FolderVie
       {/* Modern File Explorer */}
       <div className="bg-gradient-to-br from-rose-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 border border-rose-200 dark:border-rose-800 rounded-2xl shadow-xl overflow-hidden">
         <div className="p-0">
-          {filteredAndSortedItems().length > 0 ? (
+          {filteredAndSortedItems.length > 0 ? (
             <div className="max-h-[70vh] overflow-y-auto bg-white/80 dark:bg-red-900/80 backdrop-blur-sm">
               {/* Modern File List - Compact */}
               <div className="p-3 space-y-0.5">
-                {filteredAndSortedItems().map(item => renderModernListItem(item))}
+                {filteredAndSortedItems.map(item => renderModernListItem(item))}
               </div>
             </div>
           ) : (

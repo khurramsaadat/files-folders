@@ -277,7 +277,7 @@ export function generateClientPDF(
 <body>
     <div class="header">
         <h1>📁 ${options.projectName}</h1>
-        <div class="subtitle">Professional File Structure Overview</div>
+        <div class="subtitle">File Structure Overview</div>
         <div class="subtitle">Generated on ${timeString}</div>
     </div>
 
