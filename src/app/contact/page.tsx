@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { LuMail, LuClock, LuMessageSquare, LuSend, LuChevronRight } from 'react-icons/lu';
+import emailjs from '@emailjs/browser';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -15,25 +16,100 @@ export default function ContactPage() {
     message: ''
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<{
+    type: 'success' | 'error' | null;
+    message: string;
+  }>({ type: null, message: '' });
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
+    // Clear status when user starts typing
+    if (submitStatus.type) {
+      setSubmitStatus({ type: null, message: '' });
+    }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log('Form submitted:', formData);
-    // Reset form
-    setFormData({
-      name: '',
-      email: '',
-      subject: '',
-      message: ''
-    });
+    setIsSubmitting(true);
+    setSubmitStatus({ type: null, message: '' });
+
+    try {
+      // EmailJS configuration - Replace with your actual values
+      const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || 'YOUR_SERVICE_ID';
+      const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || 'YOUR_TEMPLATE_ID';
+      const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || 'YOUR_PUBLIC_KEY';
+
+      // Check if EmailJS is configured
+      if (serviceId === 'YOUR_SERVICE_ID' || templateId === 'YOUR_TEMPLATE_ID' || publicKey === 'YOUR_PUBLIC_KEY') {
+        // Fallback to API route for development
+        const response = await fetch('/api/contact', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          setSubmitStatus({
+            type: 'success',
+            message: 'Message sent successfully! (Development mode - check console for email data)'
+          });
+        } else {
+          throw new Error(result.error || 'Failed to send message');
+        }
+      } else {
+        // Use EmailJS for production
+        const templateParams = {
+          from_name: formData.name,
+          from_email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+          to_email: 'khurram.saadat@yahoo.com'
+        };
+
+        const result = await emailjs.send(
+          serviceId,
+          templateId,
+          templateParams,
+          publicKey
+        );
+
+        if (result.status === 200) {
+          setSubmitStatus({
+            type: 'success',
+            message: 'Message sent successfully! We will get back to you within 24-48 hours.'
+          });
+        } else {
+          throw new Error('Failed to send email');
+        }
+      }
+
+      // Reset form on success
+      setFormData({
+        name: '',
+        email: '',
+        subject: '',
+        message: ''
+      });
+
+    } catch (error) {
+      console.error('Email sending error:', error);
+      setSubmitStatus({
+        type: 'error',
+        message: 'Failed to send message. Please try again later.'
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleClearForm = () => {
@@ -197,19 +273,52 @@ export default function ContactPage() {
                     />
                   </div>
 
+                  {/* Status Message */}
+                  {submitStatus.type && (
+                    <div className={`p-4 rounded-lg border ${
+                      submitStatus.type === 'success'
+                        ? 'bg-green-50 border-green-200 text-green-800 dark:bg-green-900/20 dark:border-green-700 dark:text-green-300'
+                        : 'bg-red-50 border-red-200 text-red-800 dark:bg-red-900/20 dark:border-red-700 dark:text-red-300'
+                    }`}>
+                      <div className="flex items-center gap-2">
+                        {submitStatus.type === 'success' ? (
+                          <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
+                            <span className="text-white text-xs font-bold">✓</span>
+                          </div>
+                        ) : (
+                          <div className="w-5 h-5 rounded-full bg-red-500 flex items-center justify-center">
+                            <span className="text-white text-xs font-bold">✕</span>
+                          </div>
+                        )}
+                        <span className="font-medium">{submitStatus.message}</span>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="flex gap-4">
                     <Button
                       type="submit"
-                      className="bg-gradient-to-r from-red-600 to-red-800 hover:from-red-700 hover:to-red-900 text-white font-semibold py-2 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
+                      disabled={isSubmitting}
+                      className="bg-gradient-to-r from-red-600 to-red-800 hover:from-red-700 hover:to-red-900 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed text-white font-semibold py-2 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
                     >
-                      <LuSend className="w-4 h-4 mr-2" />
-                      Send Message
+                      {isSubmitting ? (
+                        <>
+                          <div className="w-4 h-4 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                          Sending...
+                        </>
+                      ) : (
+                        <>
+                          <LuSend className="w-4 h-4 mr-2" />
+                          Send Message
+                        </>
+                      )}
                     </Button>
                     <Button
                       type="button"
                       variant="outline"
                       onClick={handleClearForm}
-                      className="border-rose-300 dark:border-rose-600 text-red-600 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-red-800/30"
+                      disabled={isSubmitting}
+                      className="border-rose-300 dark:border-rose-600 text-red-600 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-red-800/30 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       Clear Form
                     </Button>

@@ -310,7 +310,7 @@ function DashboardContent() {
               <div className="w-6 h-6 bg-gradient-to-br from-red-600 to-red-800 rounded-lg flex items-center justify-center">
                 <LuFolderOpen className="w-4 h-4 text-white" />
               </div>
-              <span className="font-medium text-sm text-red-800 dark:text-rose-300">CREATIVE VIDEO PROJECT Q4 2025</span>
+              <span className="font-medium text-sm text-red-800 dark:text-rose-300">CREATIVE VIDEO PROJECT</span>
               <span className="ml-auto text-xs text-red-600 dark:text-rose-400">25 items</span>
             </div>
 
@@ -320,7 +320,7 @@ function DashboardContent() {
                 <div className="w-5 h-5 bg-gradient-to-br from-red-600 to-red-800 rounded flex items-center justify-center">
                   <LuFolderOpen className="w-3 h-3 text-white" />
                 </div>
-                <span className="text-xs font-medium text-red-700 dark:text-rose-400">CA</span>
+                <span className="text-xs font-medium text-red-700 dark:text-rose-400">CONCOURSE A</span>
                 <span className="ml-auto text-xs text-red-500 dark:text-rose-500">12 items</span>
               </div>
 
@@ -389,7 +389,7 @@ function DashboardContent() {
             <div className="mt-6 p-4 bg-gradient-to-r from-rose-100 to-orange-100 dark:from-red-900/30 dark:to-orange-900/30 rounded-xl border border-rose-200 dark:border-rose-700">
               <div className="text-center">
                 <p className="text-sm font-medium text-red-700 dark:text-rose-300 mb-3">
-                  🎯 This is what your messy folders will look like - organized, clean, and professional!
+                  This is what your messy folders will look like - Organized, Clean, and Professional
                 </p>
                 <div className="flex items-center justify-center gap-4 text-xs text-red-600 dark:text-rose-400">
                   <div className="flex items-center gap-1">
