@@ -183,7 +183,7 @@ export function generateClientPDF(
             align-items: center;
             justify-content: center;
             border-radius: 2px;
-            font-size: 7px;
+            font-size: 6px;
             font-weight: bold;
             color: white;
         }
@@ -227,9 +227,11 @@ export function generateClientPDF(
             text-align: right;
         }
         
-        .nested {
-            margin-left: 15px;
-        }
+        .nested-1 { margin-left: 32px; }
+        .nested-2 { margin-left: 64px; }
+        .nested-3 { margin-left: 96px; }
+        .nested-4 { margin-left: 128px; }
+        .nested-5 { margin-left: 160px; }
         
         .summary {
             margin-top: 30px;
@@ -248,15 +250,15 @@ export function generateClientPDF(
         
         .summary-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
         }
         
         .summary-item {
             text-align: center;
-            padding: 15px;
+            padding: 10px;
             background: white;
-            border-radius: 8px;
+            border-radius: 6px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         
@@ -390,13 +392,13 @@ function generateFileStructureHTML(structure: FolderStructure[], options: PDFExp
   
   structure.forEach(item => {
     const isFolder = item.type === 'folder';
-    const nestClass = depth > 0 ? 'nested' : '';
+    const nestClass = depth > 0 ? `nested-${Math.min(depth, 5)}` : '';
     
     if (isFolder) {
       html += `
         <div class="folder-item ${nestClass}">
           <div class="item-info">
-            <div class="item-icon folder-icon">📁</div>
+            <div class="item-icon folder-icon">F</div>
             <div class="item-name folder-name">${item.name}</div>
           </div>
           <div class="item-meta">

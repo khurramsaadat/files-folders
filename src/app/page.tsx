@@ -246,37 +246,36 @@ function DashboardContent() {
       {/* Drag and Drop Area - Wider with Warm Theme */}
       <div className="max-w-4xl mx-auto">
         <div
-          className={`relative border-2 border-dashed rounded-xl p-12 text-center transition-all duration-200 ${
+          className={`relative border-2 border-dashed rounded-xl p-12 text-center transition-all duration-300 cursor-pointer transform hover:scale-105 hover:shadow-2xl ${
             isDragOver
-              ? 'border-red-600 bg-gradient-to-br from-rose-50 to-pink-50 dark:bg-gradient-to-br dark:from-red-900/20 dark:to-rose-900/20'
-              : 'border-rose-300 dark:border-rose-600 hover:border-red-500 hover:bg-gradient-to-br hover:from-rose-50 hover:to-orange-50 dark:hover:from-red-800/30 dark:hover:to-rose-700/30'
+              ? 'border-red-600 bg-gradient-to-br from-rose-50 to-pink-50 dark:bg-gradient-to-br dark:from-red-900/20 dark:to-rose-900/20 shadow-xl scale-105'
+              : 'border-rose-300 dark:border-rose-600 hover:border-red-600 hover:bg-gradient-to-br hover:from-rose-100 hover:to-orange-100 dark:hover:from-red-800/40 dark:hover:to-rose-700/40 shadow-lg hover:shadow-red-500/20'
           }`}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
+          onClick={handleOpenFolder}
         >
-          <div className="space-y-6">
-            <div className="mx-auto w-20 h-20 bg-gradient-to-br from-red-600 to-red-800 rounded-xl flex items-center justify-center shadow-lg">
-              <LuFolderOpen className="w-10 h-10 text-white" />
+          <div className="space-y-6 transition-all duration-300">
+            <div className="mx-auto w-20 h-20 bg-gradient-to-br from-red-600 to-red-800 rounded-xl flex items-center justify-center shadow-lg transform transition-all duration-300 hover:scale-110 hover:shadow-xl hover:from-red-500 hover:to-red-700">
+              <LuFolderOpen className="w-10 h-10 text-white transition-all duration-300 hover:scale-110" />
       </div>
 
-            <div className="space-y-3">
-              <h3 className="text-2xl font-semibold bg-gradient-to-r from-red-700 to-red-900 dark:from-rose-200 dark:to-orange-200 bg-clip-text text-transparent">
+            <div className="space-y-3 transition-all duration-300">
+              <h3 className="text-2xl font-semibold bg-gradient-to-r from-red-700 to-red-900 dark:from-rose-200 dark:to-orange-200 bg-clip-text text-transparent transition-all duration-300 hover:from-red-600 hover:to-red-800">
                 {isDragOver ? 'Drop your files here' : 'Drag & drop files or folders'}
               </h3>
-              <p className="text-base text-red-600 dark:text-rose-400">
-                {isDragOver ? 'Release to upload' : 'or click the button below to browse'}
+              <p className="text-base text-red-600 dark:text-rose-400 transition-all duration-300 hover:text-red-700 dark:hover:text-rose-300">
+                {isDragOver ? 'Release to upload' : 'or click anywhere to browse'}
               </p>
       </div>
 
-            <Button 
-              size="lg"
-              className="bg-gradient-to-r from-red-600 to-red-800 hover:from-red-700 hover:to-red-900 text-white font-semibold py-4 px-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200" 
-              onClick={handleOpenFolder}
-            >
-              <LuFolderOpen className="mr-3 h-6 w-6" />
-              Browse Files / Folders
-            </Button>
+            <div className="inline-flex items-center gap-3 bg-white/20 dark:bg-black/20 rounded-lg px-6 py-3 border border-white/30 dark:border-white/10 transition-all duration-300 hover:bg-white/40 dark:hover:bg-black/40 hover:border-red-400/50 hover:shadow-lg transform hover:scale-105">
+              <LuFolderOpen className="h-5 w-5 text-red-700 dark:text-rose-300 transition-all duration-300 hover:text-red-600 dark:hover:text-rose-200 hover:scale-110" />
+              <span className="text-sm font-medium text-red-700 dark:text-rose-300 transition-all duration-300 hover:text-red-600 dark:hover:text-rose-200">
+                Browse Files / Folders
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -315,62 +314,74 @@ function DashboardContent() {
               <span className="ml-auto text-xs text-red-600 dark:text-rose-400">25 items</span>
             </div>
 
-            {/* Nested Folders */}
-            <div className="ml-6 space-y-2">
+            {/* Nested Folders - First Level */}
+            <div className="ml-8 space-y-2">
               <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-rose-50 dark:hover:bg-red-900/10">
                 <div className="w-5 h-5 bg-gradient-to-br from-red-600 to-red-800 rounded flex items-center justify-center">
                   <LuFolderOpen className="w-3 h-3 text-white" />
                 </div>
-                <span className="text-xs font-medium text-red-700 dark:text-rose-400">VIDEO LOOP INTER</span>
-                <span className="ml-auto text-xs text-red-500 dark:text-rose-500">6 items</span>
+                <span className="text-xs font-medium text-red-700 dark:text-rose-400">CA</span>
+                <span className="ml-auto text-xs text-red-500 dark:text-rose-500">12 items</span>
               </div>
 
-              <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-rose-50 dark:hover:bg-red-900/10">
-                <div className="w-5 h-5 bg-gradient-to-br from-red-600 to-red-800 rounded flex items-center justify-center">
-                  <LuFolderOpen className="w-3 h-3 text-white" />
-                </div>
-                <span className="text-xs font-medium text-red-700 dark:text-rose-400">CREATIVE LOOP SEPTEMBER 2025 FRAG</span>
-                <span className="ml-auto text-xs text-red-500 dark:text-rose-500">3 items</span>
-              </div>
-
-              {/* Sample Files */}
-              <div className="ml-6 space-y-1">
-                <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-orange-50 dark:hover:bg-red-800/10">
-                  <div className="w-5 h-5 bg-gradient-to-br from-amber-700 to-amber-900 rounded flex items-center justify-center">
-                    <span className="text-white text-[8px] font-bold">MP4</span>
+              {/* Nested Folders - Second Level */}
+              <div className="ml-8 space-y-2">
+                <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-rose-50 dark:hover:bg-red-900/10">
+                  <div className="w-5 h-5 bg-gradient-to-br from-red-600 to-red-800 rounded flex items-center justify-center">
+                    <LuFolderOpen className="w-3 h-3 text-white" />
                   </div>
-                  <span className="text-xs text-slate-700 dark:text-slate-300">CREATIVE_VIDEO_LOOP_1920x1080px_40s.mp4</span>
+                  <span className="text-xs font-medium text-red-700 dark:text-rose-400">AIRPODS</span>
+                  <span className="ml-auto text-xs text-red-500 dark:text-rose-500">3 items</span>
                 </div>
 
-                <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-orange-50 dark:hover:bg-red-800/10">
-                  <div className="w-5 h-5 bg-gradient-to-br from-amber-700 to-amber-900 rounded flex items-center justify-center">
-                    <span className="text-white text-[8px] font-bold">MP4</span>
+                {/* Sample Files - Third Level */}
+                <div className="ml-8 space-y-1">
+                  <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-orange-50 dark:hover:bg-red-800/10">
+                    <div className="w-5 h-5 bg-gradient-to-br from-amber-700 to-amber-900 rounded flex items-center justify-center">
+                      <span className="text-white text-[8px] font-bold">MP4</span>
+                    </div>
+                    <span className="text-xs text-slate-700 dark:text-slate-300">CA_DM801_PART_1_AIRPODS_PRO_3.mp4</span>
                   </div>
-                  <span className="text-xs text-slate-700 dark:text-slate-300">CREATIVE_VIDEO_LOOP_2160x3840px_40s.mp4</span>
-                </div>
 
-                <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-orange-50 dark:hover:bg-red-800/10">
-                  <div className="w-5 h-5 bg-gradient-to-br from-amber-700 to-amber-900 rounded flex items-center justify-center">
-                    <span className="text-white text-[8px] font-bold">MP4</span>
+                  <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-orange-50 dark:hover:bg-red-800/10">
+                    <div className="w-5 h-5 bg-gradient-to-br from-amber-700 to-amber-900 rounded flex items-center justify-center">
+                      <span className="text-white text-[8px] font-bold">MP4</span>
+                    </div>
+                    <span className="text-xs text-slate-700 dark:text-slate-300">CA_DM801_PART_2_AIRPODS_PRO_3.mp4</span>
                   </div>
-                  <span className="text-xs text-slate-700 dark:text-slate-300">CREATIVE_VIDEO_LOOP_3840x1080px_40s.mp4</span>
-                </div>
-              </div>
 
-              <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-rose-50 dark:hover:bg-red-900/10">
-                <div className="w-5 h-5 bg-gradient-to-br from-red-600 to-red-800 rounded flex items-center justify-center">
-                  <LuFolderOpen className="w-3 h-3 text-white" />
+                  <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-orange-50 dark:hover:bg-red-800/10">
+                    <div className="w-5 h-5 bg-gradient-to-br from-amber-700 to-amber-900 rounded flex items-center justify-center">
+                      <span className="text-white text-[8px] font-bold">MP4</span>
+                    </div>
+                    <span className="text-xs text-slate-700 dark:text-slate-300">CA_DM801_PART_4_AIRPODS_PRO_3.mp4</span>
+                  </div>
                 </div>
-                <span className="text-xs font-medium text-red-700 dark:text-rose-400">VIDEOS SEPARATELY</span>
-                <span className="ml-auto text-xs text-red-500 dark:text-rose-500">8 items</span>
-              </div>
 
-              <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-rose-50 dark:hover:bg-red-900/10">
-                <div className="w-5 h-5 bg-gradient-to-br from-red-600 to-red-800 rounded flex items-center justify-center">
-                  <LuFolderOpen className="w-3 h-3 text-white" />
+                <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-rose-50 dark:hover:bg-red-900/10">
+                  <div className="w-5 h-5 bg-gradient-to-br from-red-600 to-red-800 rounded flex items-center justify-center">
+                    <LuFolderOpen className="w-3 h-3 text-white" />
+                  </div>
+                  <span className="text-xs font-medium text-red-700 dark:text-rose-400">IPHONES</span>
+                  <span className="ml-auto text-xs text-red-500 dark:text-rose-500">2 items</span>
                 </div>
-                <span className="text-xs font-medium text-red-700 dark:text-rose-400">1080x1920px</span>
-                <span className="ml-auto text-xs text-red-500 dark:text-rose-500">2 items</span>
+
+                {/* Sample Files for IPHONES - Third Level */}
+                <div className="ml-8 space-y-1">
+                  <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-orange-50 dark:hover:bg-red-800/10">
+                    <div className="w-5 h-5 bg-gradient-to-br from-amber-700 to-amber-900 rounded flex items-center justify-center">
+                      <span className="text-white text-[8px] font-bold">MP4</span>
+                    </div>
+                    <span className="text-xs text-slate-700 dark:text-slate-300">CA_DM801_PART_1_IPHONE_17_AIR.mp4</span>
+                  </div>
+
+                  <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-orange-50 dark:hover:bg-red-800/10">
+                    <div className="w-5 h-5 bg-gradient-to-br from-amber-700 to-amber-900 rounded flex items-center justify-center">
+                      <span className="text-white text-[8px] font-bold">MP4</span>
+                    </div>
+                    <span className="text-xs text-slate-700 dark:text-slate-300">CA_DM801_PART_1_IPHONE_17_PRO_MAX.mp4</span>
+                  </div>
+                </div>
               </div>
             </div>
 
