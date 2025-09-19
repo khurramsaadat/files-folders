@@ -14,29 +14,32 @@ interface FileItem {
   newName: string;
 }
 
+// File System Access API types
+interface FileSystemDirectoryHandle {
+  name: string;
+  getFileHandle(name: string, options?: { create?: boolean }): Promise<FileSystemFileHandle>;
+}
+
+interface FileSystemFileHandle {
+  createWritable(): Promise<FileSystemWritableFileStream>;
+}
+
+interface FileSystemWritableFileStream {
+  write(data: File): Promise<void>;
+  close(): Promise<void>;
+}
+
 export default function BatchRenamePage() {
   const [isDragOver, setIsDragOver] = useState(false);
   const [files, setFiles] = useState<FileItem[]>([]);
   const [pattern, setPattern] = useState('$N_#');
   const [targetDirectory, setTargetDirectory] = useState<string>('');
-  const [sourceDirectory, setSourceDirectory] = useState<string>('');
   const [isApplying, setIsApplying] = useState(false);
   const [applyStatus, setApplyStatus] = useState<string>('');
 
   const processFiles = (fileList: FileList) => {
     const processedFiles: FileItem[] = [];
     
-    // Determine source directory from the first file's webkitRelativePath for reference
-    let sourcePath = '';
-    if (fileList.length > 0 && fileList[0].webkitRelativePath) {
-      const pathParts = fileList[0].webkitRelativePath.split('/');
-      if (pathParts.length > 1) {
-        sourcePath = pathParts.slice(0, -1).join('/'); // Remove filename, keep directory path
-      }
-    }
-    
-    // Store source directory for reference but don't auto-set target
-    setSourceDirectory(sourcePath || 'Selected Files Location');
     // Don't automatically set target directory - user must select it
     
     for (let i = 0; i < fileList.length; i++) {
@@ -120,7 +123,7 @@ export default function BatchRenamePage() {
       // Use the File System Access API to select a directory
       if ('showDirectoryPicker' in window) {
         setApplyStatus('Opening directory picker...');
-        const directoryHandle = await (window as any).showDirectoryPicker({
+        const directoryHandle = await (window as unknown as { showDirectoryPicker: (options: { mode: string }) => Promise<FileSystemDirectoryHandle> }).showDirectoryPicker({
           mode: 'readwrite'
         });
         
@@ -138,7 +141,7 @@ export default function BatchRenamePage() {
         setApplyStatus('');
         
         // Store the directory handle for later use
-        (window as any).selectedDirectoryHandle = directoryHandle;
+        (window as unknown as { selectedDirectoryHandle: FileSystemDirectoryHandle }).selectedDirectoryHandle = directoryHandle;
         
         return directoryHandle;
       } else {
@@ -168,7 +171,7 @@ export default function BatchRenamePage() {
               setApplyStatus(`Target directory selected: ${directoryName}`);
               
               // Store reference to the selected directory
-              (window as any).selectedDirectoryPath = directoryName;
+              (window as unknown as { selectedDirectoryPath: string }).selectedDirectoryPath = directoryName;
               
               document.body.removeChild(input);
               resolve(directoryName);
@@ -188,7 +191,7 @@ export default function BatchRenamePage() {
         });
       }
     } catch (error) {
-      if (error.name !== 'AbortError') {
+      if (error instanceof Error && error.name !== 'AbortError') {
         console.error('Directory selection failed:', error);
         setApplyStatus('Directory selection failed. You can manually enter a directory name.');
         
@@ -213,7 +216,7 @@ export default function BatchRenamePage() {
     
     try {
       // Check if we have a directory handle from the File System Access API
-      const directoryHandle = (window as any).selectedDirectoryHandle;
+      const directoryHandle = (window as unknown as { selectedDirectoryHandle?: FileSystemDirectoryHandle }).selectedDirectoryHandle;
       
       if (directoryHandle && 'showDirectoryPicker' in window) {
         // Use File System Access API to write files directly to selected directory
@@ -240,7 +243,8 @@ export default function BatchRenamePage() {
             await new Promise(resolve => setTimeout(resolve, 100));
           } catch (error) {
             console.error(`Failed to write ${fileItem.originalName}:`, error);
-            setApplyStatus(`Error writing ${fileItem.originalName}: ${error}`);
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            setApplyStatus(`Error writing ${fileItem.originalName}: ${errorMessage}`);
             errorCount++;
             await new Promise(resolve => setTimeout(resolve, 1000));
           }
@@ -292,7 +296,8 @@ export default function BatchRenamePage() {
       }
       
     } catch (error) {
-      setApplyStatus(`❌ Error during rename process: ${error}`);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      setApplyStatus(`❌ Error during rename process: ${errorMessage}`);
       console.error('Rename process failed:', error);
     } finally {
       setIsApplying(false);
@@ -309,11 +314,11 @@ export default function BatchRenamePage() {
     setFiles([]);
     setPattern('$N_#');
     setTargetDirectory('');
-    setSourceDirectory('');
     setApplyStatus('');
     // Clear the stored directory handle
-    if ((window as any).selectedDirectoryHandle) {
-      delete (window as any).selectedDirectoryHandle;
+    const windowWithHandle = window as unknown as { selectedDirectoryHandle?: FileSystemDirectoryHandle };
+    if (windowWithHandle.selectedDirectoryHandle) {
+      delete windowWithHandle.selectedDirectoryHandle;
     }
   };
 

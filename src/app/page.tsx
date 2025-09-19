@@ -1,6 +1,5 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import { LuFolderOpen } from 'react-icons/lu';
 import { useEffect, useState } from 'react';
 import { FolderViewer } from '@/components/ui/folder-viewer';
