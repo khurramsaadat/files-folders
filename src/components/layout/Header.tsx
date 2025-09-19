@@ -22,6 +22,12 @@ export function Header() {
           Home
         </Link>
         <Link 
+          href="/batch-rename" 
+          className="text-sm font-medium text-red-600 dark:text-rose-400 hover:text-red-700 dark:hover:text-rose-300 transition-colors px-3 py-2 rounded-lg hover:bg-rose-100 dark:hover:bg-red-800/30"
+        >
+          Batch Rename
+        </Link>
+        <Link 
           href="/contact" 
           className="text-sm font-medium text-red-600 dark:text-rose-400 hover:text-red-700 dark:hover:text-rose-300 transition-colors px-3 py-2 rounded-lg hover:bg-rose-100 dark:hover:bg-red-800/30"
         >
