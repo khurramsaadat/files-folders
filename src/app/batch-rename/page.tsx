@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { LuFolderOpen, LuDownload, LuRefreshCw, LuFolderCheck, LuPlay } from 'react-icons/lu';
+import { LuFolderOpen, LuRefreshCw, LuFolderCheck, LuPlay } from 'react-icons/lu';
 import { useState } from 'react';
 
 interface FileItem {
@@ -114,22 +114,6 @@ export default function BatchRenamePage() {
     document.body.removeChild(input);
   };
 
-  const downloadRenamedFiles = () => {
-    // Create a simple text file with rename instructions
-    const instructions = files.map(fileItem => 
-      `Rename: "${fileItem.originalName}" → "${fileItem.newName}"`
-    ).join('\n');
-    
-    const blob = new Blob([instructions], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'rename_instructions.txt';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
 
   const selectTargetDirectory = async () => {
     try {
@@ -140,12 +124,17 @@ export default function BatchRenamePage() {
           mode: 'readwrite'
         });
         
-        // Get the directory name (this is what we can reliably get)
+        // For File System Access API, we can only get the directory name for security reasons
+        // But we can show a more meaningful representation
         const directoryName = directoryHandle.name;
         
-        // Set the selected directory name as the target
+        // Create a more descriptive path representation
+        // Note: Browser security prevents us from getting the full system path
+        const displayPath = `📁 ${directoryName} (Selected Directory)`;
+        
+        // Set the selected directory with descriptive path
         console.log('Directory selected:', directoryName);
-        setTargetDirectory(directoryName);
+        setTargetDirectory(displayPath);
         setApplyStatus(`Target directory selected: ${directoryName}`);
         
         // Store the directory handle for later use
@@ -165,13 +154,17 @@ export default function BatchRenamePage() {
             const files = target.files;
             
             if (files && files.length > 0) {
-              // Get the directory name from the first file's path
+              // Get the directory path from the first file
               const firstFile = files[0];
-              const pathParts = firstFile.webkitRelativePath.split('/');
+              const fullRelativePath = firstFile.webkitRelativePath;
+              const pathParts = fullRelativePath.split('/');
               const directoryName = pathParts[0]; // First part is the directory name
               
+              // Try to get more meaningful path information
+              const displayPath = `📁 ${directoryName} (Selected Directory)`;
+              
               console.log('Directory selected (fallback):', directoryName);
-              setTargetDirectory(directoryName);
+              setTargetDirectory(displayPath);
               setApplyStatus(`Target directory selected: ${directoryName}`);
               
               // Store reference to the selected directory
@@ -456,14 +449,7 @@ export default function BatchRenamePage() {
                       className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <LuPlay className="w-4 h-4 mr-2" />
-                      {isApplying ? 'Applying...' : 'Apply Renames'}
-                    </Button>
-                    <Button 
-                      onClick={downloadRenamedFiles}
-                      className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white"
-                    >
-                      <LuDownload className="w-4 h-4 mr-2" />
-                      Download Instructions
+                      {isApplying ? 'Processing...' : 'Batch Rename'}
                     </Button>
                     <Button 
                       onClick={resetFiles}
@@ -488,27 +474,14 @@ export default function BatchRenamePage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-2 max-h-96 overflow-y-auto">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-[600px] overflow-y-auto p-2">
                     {files.map((fileItem, index) => (
-                      <div key={index} className="flex items-center justify-between p-3 bg-white dark:bg-red-900/20 rounded-lg border border-rose-200 dark:border-rose-700">
-                        <div className="flex-1 min-w-0">
-                          <div className="text-sm font-medium text-red-800 dark:text-rose-200 truncate">
-                            {fileItem.originalName}
-                          </div>
-                          <div className="text-xs text-red-600 dark:text-rose-400">
-                            {(fileItem.file.size / 1024).toFixed(1)} KB
-                          </div>
+                      <div key={index} className="p-4 rounded-lg hover:bg-rose-50 dark:hover:bg-red-900/10 transition-colors border-l-4 border-red-500">
+                        <div className="text-sm font-medium text-red-800 dark:text-rose-200 break-words leading-relaxed">
+                          {fileItem.newName}
                         </div>
-                        <div className="mx-4 text-red-500 dark:text-rose-500">
-                          →
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="text-sm font-medium text-red-800 dark:text-rose-200 truncate">
-                            {fileItem.newName}
-                          </div>
-                          <div className="text-xs text-red-600 dark:text-rose-400">
-                            New name
-                          </div>
+                        <div className="text-xs text-red-600 dark:text-rose-400 mt-2">
+                          {(fileItem.file.size / 1024).toFixed(1)} KB
                         </div>
                       </div>
                     ))}
