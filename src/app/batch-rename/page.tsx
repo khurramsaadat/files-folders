@@ -135,7 +135,7 @@ export default function BatchRenamePage() {
         // Set the selected directory with descriptive path
         console.log('Directory selected:', directoryName);
         setTargetDirectory(displayPath);
-        setApplyStatus(`Target directory selected: ${directoryName}`);
+        setApplyStatus('');
         
         // Store the directory handle for later use
         (window as any).selectedDirectoryHandle = directoryHandle;
@@ -319,7 +319,7 @@ export default function BatchRenamePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50/80 to-orange-50/80 dark:from-red-900/10 dark:to-orange-900/10">
-      <div className="container mx-auto px-4 py-8">
+      <div className="w-full mx-auto px-6 py-8">
         {/* Welcome Section */}
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-red-700 to-red-900 dark:from-rose-200 dark:to-orange-200 bg-clip-text text-transparent">
@@ -331,7 +331,7 @@ export default function BatchRenamePage() {
 
           {/* Drag and Drop Area */}
           {files.length === 0 && (
-            <div className="max-w-4xl mx-auto mb-12">
+            <div className="w-full max-w-5xl mx-auto mb-12">
               <div
                 className={`relative border-2 border-dashed rounded-xl p-12 text-center transition-all duration-300 cursor-pointer transform hover:scale-105 hover:shadow-2xl ${
                   isDragOver
@@ -378,7 +378,7 @@ export default function BatchRenamePage() {
 
           {/* Settings Panel and File List */}
           {files.length > 0 && (
-            <div className="max-w-6xl mx-auto space-y-8">
+            <div className="w-full mx-auto space-y-8 px-4">
               {/* Settings Panel */}
               <Card className="bg-gradient-to-br from-rose-50 to-orange-50 dark:from-red-900/10 dark:to-orange-900/10 border-rose-200 dark:border-rose-800">
                 <CardHeader>
@@ -390,7 +390,9 @@ export default function BatchRenamePage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="space-y-4">
+                  {/* Two Column Layout */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Left Column - Rename Pattern */}
                     <div>
                       <label className="block text-sm font-medium text-red-700 dark:text-rose-300 mb-2">
                         Rename Pattern
@@ -407,6 +409,7 @@ export default function BatchRenamePage() {
                       </div>
                     </div>
 
+                    {/* Right Column - Target Directory */}
                     <div>
                       <label className="block text-sm font-medium text-red-700 dark:text-rose-300 mb-2">
                         Target Directory
@@ -470,21 +473,23 @@ export default function BatchRenamePage() {
                     <div className="w-8 h-8 bg-gradient-to-br from-orange-600 to-red-700 rounded-lg flex items-center justify-center">
                       <span className="text-white text-xs font-bold">{files.length}</span>
                     </div>
-                    Files to Rename ({files.length})
+                    Rename Summary ({files.length})
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-[600px] overflow-y-auto p-2">
-                    {files.map((fileItem, index) => (
-                      <div key={index} className="p-4 rounded-lg hover:bg-rose-50 dark:hover:bg-red-900/10 transition-colors border-l-4 border-red-500">
-                        <div className="text-sm font-medium text-red-800 dark:text-rose-200 break-words leading-relaxed">
-                          {fileItem.newName}
+                <CardContent className="p-0">
+                  <div className="border border-rose-300 dark:border-rose-600 bg-white dark:bg-gray-900">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0">
+                      {files.map((fileItem, index) => (
+                        <div 
+                          key={index} 
+                          className="px-3 py-2 text-xs font-medium text-red-800 dark:text-rose-200 hover:bg-rose-50 dark:hover:bg-red-900/10 transition-colors border-r border-b border-rose-200 dark:border-rose-700 last:border-r-0"
+                        >
+                          <div className="whitespace-nowrap overflow-hidden text-ellipsis text-left" title={fileItem.newName}>
+                            {fileItem.newName}
+                          </div>
                         </div>
-                        <div className="text-xs text-red-600 dark:text-rose-400 mt-2">
-                          {(fileItem.file.size / 1024).toFixed(1)} KB
-                        </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
                 </CardContent>
               </Card>
