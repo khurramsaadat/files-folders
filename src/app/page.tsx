@@ -233,10 +233,10 @@ function DashboardContent() {
     <div className="space-y-6">
       {/* Welcome Section */}
       <div className="text-center space-y-3">
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-red-700 to-red-900 dark:from-rose-200 dark:to-orange-200 bg-clip-text text-transparent">
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-red-700 to-red-900 dark:from-rose-200 dark:to-orange-200 bg-clip-text text-transparent">
           Welcome to Files & Folders
         </h1>
-        <p className="text-lg text-red-600 dark:text-rose-400 max-w-2xl mx-auto">
+        <p className="text-base text-red-600 dark:text-rose-400 max-w-2xl mx-auto">
           Organize, explore, and share your project files with beautiful visual reports
           </p>
         </div>
@@ -309,8 +309,8 @@ function DashboardContent() {
               <div className="w-6 h-6 bg-gradient-to-br from-red-600 to-red-800 rounded-lg flex items-center justify-center">
                 <LuFolderOpen className="w-4 h-4 text-white" />
               </div>
-              <span className="font-medium text-sm text-red-800 dark:text-rose-300">CREATIVE VIDEO PROJECT</span>
-              <span className="ml-auto text-xs text-red-600 dark:text-rose-400">25 items</span>
+              <span className="font-medium text-[10px] sm:text-sm text-red-800 dark:text-rose-300">CREATIVE VIDEO PROJECT</span>
+              <span className="ml-auto text-[10px] sm:text-xs text-red-600 dark:text-rose-400">25 items</span>
             </div>
 
             {/* Nested Folders - First Level */}
@@ -319,8 +319,8 @@ function DashboardContent() {
                 <div className="w-5 h-5 bg-gradient-to-br from-red-600 to-red-800 rounded flex items-center justify-center">
                   <LuFolderOpen className="w-3 h-3 text-white" />
                 </div>
-                <span className="text-xs font-medium text-red-700 dark:text-rose-400">CONCOURSE A</span>
-                <span className="ml-auto text-xs text-red-500 dark:text-rose-500">12 items</span>
+                <span className="text-[10px] sm:text-xs font-medium text-red-700 dark:text-rose-400">CONCOURSE A</span>
+                <span className="ml-auto text-[10px] sm:text-xs text-red-500 dark:text-rose-500">12 items</span>
               </div>
 
               {/* Nested Folders - Second Level */}
@@ -329,31 +329,31 @@ function DashboardContent() {
                   <div className="w-5 h-5 bg-gradient-to-br from-red-600 to-red-800 rounded flex items-center justify-center">
                     <LuFolderOpen className="w-3 h-3 text-white" />
                   </div>
-                  <span className="text-xs font-medium text-red-700 dark:text-rose-400">AIRPODS</span>
-                  <span className="ml-auto text-xs text-red-500 dark:text-rose-500">3 items</span>
+                  <span className="text-[10px] sm:text-xs font-medium text-red-700 dark:text-rose-400">AIRPODS</span>
+                  <span className="ml-auto text-[10px] sm:text-xs text-red-500 dark:text-rose-500">3 items</span>
                 </div>
 
                 {/* Sample Files - Third Level */}
                 <div className="ml-8 space-y-1">
-                  <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-orange-50 dark:hover:bg-red-800/10">
-                    <div className="w-5 h-5 bg-gradient-to-br from-amber-700 to-amber-900 rounded flex items-center justify-center">
+                  <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-orange-50 dark:hover:bg-red-800/10 min-w-0">
+                    <div className="w-5 h-5 bg-gradient-to-br from-amber-700 to-amber-900 rounded flex items-center justify-center flex-shrink-0">
                       <span className="text-white text-[8px] font-bold">MP4</span>
                     </div>
-                    <span className="text-xs text-slate-700 dark:text-slate-300">CA_DM801_PART_1_AIRPODS_PRO_3.mp4</span>
+                    <span className="text-[10px] sm:text-xs text-slate-700 dark:text-slate-300 truncate min-w-0 flex-1">CA_DM801_PART1_AIRPODS.mp4</span>
                   </div>
 
-                  <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-orange-50 dark:hover:bg-red-800/10">
-                    <div className="w-5 h-5 bg-gradient-to-br from-amber-700 to-amber-900 rounded flex items-center justify-center">
+                  <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-orange-50 dark:hover:bg-red-800/10 min-w-0">
+                    <div className="w-5 h-5 bg-gradient-to-br from-amber-700 to-amber-900 rounded flex items-center justify-center flex-shrink-0">
                       <span className="text-white text-[8px] font-bold">MP4</span>
                     </div>
-                    <span className="text-xs text-slate-700 dark:text-slate-300">CA_DM801_PART_2_AIRPODS_PRO_3.mp4</span>
+                    <span className="text-[10px] sm:text-xs text-slate-700 dark:text-slate-300 truncate min-w-0 flex-1">CA_DM801_PART2_AIRPODS.mp4</span>
                   </div>
 
-                  <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-orange-50 dark:hover:bg-red-800/10">
-                    <div className="w-5 h-5 bg-gradient-to-br from-amber-700 to-amber-900 rounded flex items-center justify-center">
+                  <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-orange-50 dark:hover:bg-red-800/10 min-w-0">
+                    <div className="w-5 h-5 bg-gradient-to-br from-amber-700 to-amber-900 rounded flex items-center justify-center flex-shrink-0">
                       <span className="text-white text-[8px] font-bold">MP4</span>
                     </div>
-                    <span className="text-xs text-slate-700 dark:text-slate-300">CA_DM801_PART_4_AIRPODS_PRO_3.mp4</span>
+                    <span className="text-[10px] sm:text-xs text-slate-700 dark:text-slate-300 truncate min-w-0 flex-1">CA_DM801_PART4_AIRPODS.mp4</span>
                   </div>
                 </div>
 
@@ -361,24 +361,24 @@ function DashboardContent() {
                   <div className="w-5 h-5 bg-gradient-to-br from-red-600 to-red-800 rounded flex items-center justify-center">
                     <LuFolderOpen className="w-3 h-3 text-white" />
                   </div>
-                  <span className="text-xs font-medium text-red-700 dark:text-rose-400">IPHONES</span>
-                  <span className="ml-auto text-xs text-red-500 dark:text-rose-500">2 items</span>
+                  <span className="text-[10px] sm:text-xs font-medium text-red-700 dark:text-rose-400">IPHONES</span>
+                  <span className="ml-auto text-[10px] sm:text-xs text-red-500 dark:text-rose-500">2 items</span>
                 </div>
 
                 {/* Sample Files for IPHONES - Third Level */}
                 <div className="ml-8 space-y-1">
-                  <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-orange-50 dark:hover:bg-red-800/10">
-                    <div className="w-5 h-5 bg-gradient-to-br from-amber-700 to-amber-900 rounded flex items-center justify-center">
+                  <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-orange-50 dark:hover:bg-red-800/10 min-w-0">
+                    <div className="w-5 h-5 bg-gradient-to-br from-amber-700 to-amber-900 rounded flex items-center justify-center flex-shrink-0">
                       <span className="text-white text-[8px] font-bold">MP4</span>
                     </div>
-                    <span className="text-xs text-slate-700 dark:text-slate-300">CA_DM801_PART_1_IPHONE_17_AIR.mp4</span>
+                    <span className="text-[10px] sm:text-xs text-slate-700 dark:text-slate-300 truncate min-w-0 flex-1">CA_DM801_PART1_IPHONE.mp4</span>
                   </div>
 
-                  <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-orange-50 dark:hover:bg-red-800/10">
-                    <div className="w-5 h-5 bg-gradient-to-br from-amber-700 to-amber-900 rounded flex items-center justify-center">
+                  <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-orange-50 dark:hover:bg-red-800/10 min-w-0">
+                    <div className="w-5 h-5 bg-gradient-to-br from-amber-700 to-amber-900 rounded flex items-center justify-center flex-shrink-0">
                       <span className="text-white text-[8px] font-bold">MP4</span>
                     </div>
-                    <span className="text-xs text-slate-700 dark:text-slate-300">CA_DM801_PART_1_IPHONE_17_PRO_MAX.mp4</span>
+                    <span className="text-[10px] sm:text-xs text-slate-700 dark:text-slate-300 truncate min-w-0 flex-1">CA_DM801_PART1_MAX.mp4</span>
                   </div>
                 </div>
               </div>
@@ -387,10 +387,10 @@ function DashboardContent() {
             {/* Call to Action */}
             <div className="mt-6 p-4 bg-gradient-to-r from-rose-100 to-orange-100 dark:from-red-900/30 dark:to-orange-900/30 rounded-xl border border-rose-200 dark:border-rose-700">
               <div className="text-center">
-                <p className="text-sm font-medium text-red-700 dark:text-rose-300 mb-3">
-                  This is what your messy folders will look like - Organized, Clean, and Professional
+                <p className="text-lg font-medium text-red-700 dark:text-rose-300 mb-3">
+                  Organized, Clean, and Professional
                 </p>
-                <div className="flex items-center justify-center gap-4 text-xs text-red-600 dark:text-rose-400">
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 text-xs text-red-600 dark:text-rose-400">
                   <div className="flex items-center gap-1">
                     <div className="w-2 h-2 bg-red-500 rounded-full"></div>
                     <span>Auto-organized structure</span>
@@ -425,7 +425,7 @@ function DashboardContent() {
           {/* PNG */}
           <div className="flex flex-col items-center space-y-2">
             <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center shadow-md">
-              <span className="text-white text-[8px] font-bold">PNG</span>
+              <span className="text-white text-xs font-bold">PNG</span>
             </div>
             <span className="text-xs text-orange-700 dark:text-orange-400 font-medium">PNG</span>
           </div>
@@ -433,7 +433,7 @@ function DashboardContent() {
           {/* JPG */}
           <div className="flex flex-col items-center space-y-2">
             <div className="w-12 h-12 bg-gradient-to-br from-amber-600 to-orange-700 rounded-lg flex items-center justify-center shadow-md">
-              <span className="text-white text-[8px] font-bold">JPG</span>
+              <span className="text-white text-xs font-bold">JPG</span>
             </div>
             <span className="text-xs text-amber-700 dark:text-amber-400 font-medium">JPG</span>
           </div>
@@ -441,7 +441,7 @@ function DashboardContent() {
           {/* SVG */}
           <div className="flex flex-col items-center space-y-2">
             <div className="w-12 h-12 bg-gradient-to-br from-rose-600 to-pink-700 rounded-lg flex items-center justify-center shadow-md">
-              <span className="text-white text-[8px] font-bold">SVG</span>
+              <span className="text-white text-xs font-bold">SVG</span>
             </div>
             <span className="text-xs text-rose-700 dark:text-rose-400 font-medium">SVG</span>
           </div>
@@ -449,7 +449,7 @@ function DashboardContent() {
           {/* GIF */}
           <div className="flex flex-col items-center space-y-2">
             <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-rose-600 rounded-lg flex items-center justify-center shadow-md">
-              <span className="text-white text-[8px] font-bold">GIF</span>
+              <span className="text-white text-xs font-bold">GIF</span>
             </div>
             <span className="text-xs text-pink-700 dark:text-pink-400 font-medium">GIF</span>
           </div>
@@ -457,7 +457,7 @@ function DashboardContent() {
           {/* MP4 */}
           <div className="flex flex-col items-center space-y-2">
             <div className="w-12 h-12 bg-gradient-to-br from-amber-700 to-amber-900 rounded-lg flex items-center justify-center shadow-md">
-              <span className="text-white text-[8px] font-bold">MP4</span>
+              <span className="text-white text-xs font-bold">MP4</span>
             </div>
             <span className="text-xs text-amber-800 dark:text-amber-400 font-medium">MP4</span>
           </div>
@@ -465,7 +465,7 @@ function DashboardContent() {
           {/* MOV */}
           <div className="flex flex-col items-center space-y-2">
             <div className="w-12 h-12 bg-gradient-to-br from-orange-600 to-red-700 rounded-lg flex items-center justify-center shadow-md">
-              <span className="text-white text-[8px] font-bold">MOV</span>
+              <span className="text-white text-xs font-bold">MOV</span>
             </div>
             <span className="text-xs text-orange-700 dark:text-orange-400 font-medium">MOV</span>
           </div>
@@ -473,7 +473,7 @@ function DashboardContent() {
           {/* AVI */}
           <div className="flex flex-col items-center space-y-2">
             <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-red-800 rounded-lg flex items-center justify-center shadow-md">
-              <span className="text-white text-[8px] font-bold">AVI</span>
+              <span className="text-white text-xs font-bold">AVI</span>
             </div>
             <span className="text-xs text-red-700 dark:text-red-400 font-medium">AVI</span>
           </div>
@@ -481,7 +481,7 @@ function DashboardContent() {
           {/* MKV */}
           <div className="flex flex-col items-center space-y-2">
             <div className="w-12 h-12 bg-gradient-to-br from-rose-600 to-pink-700 rounded-lg flex items-center justify-center shadow-md">
-              <span className="text-white text-[8px] font-bold">MKV</span>
+              <span className="text-white text-xs font-bold">MKV</span>
             </div>
             <span className="text-xs text-rose-700 dark:text-rose-400 font-medium">MKV</span>
           </div>

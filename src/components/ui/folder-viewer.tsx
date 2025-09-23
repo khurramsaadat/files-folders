@@ -152,7 +152,7 @@ export function FolderViewer({ folderStructure, folderName, onClose }: FolderVie
           
           {/* Name with Extension - Smaller Font */}
           <div className="flex-1 min-w-0">
-            <span className={`text-xs font-medium truncate ${
+            <span className={`text-xs font-normal truncate ${
               item.type === 'folder' 
                 ? 'text-slate-700 dark:text-slate-200' 
                 : 'text-slate-600 dark:text-slate-300'

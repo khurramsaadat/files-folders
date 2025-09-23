@@ -38,7 +38,10 @@ export function generateClientPDF(
   folderStructure: FolderStructure[],
   options: PDFExportOptions
 ): string {
-  const timestamp = new Date().toISOString().split('T')[0];
+  // Format date as "23 SEP 2025" style
+  const now = new Date();
+  const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+  const timestamp = `${now.getDate().toString().padStart(2, '0')} ${months[now.getMonth()]} ${now.getFullYear()}`;
   
   const htmlContent = `
 <!DOCTYPE html>
@@ -233,6 +236,44 @@ export function generateClientPDF(
         .nested-4 { margin-left: 128px; }
         .nested-5 { margin-left: 160px; }
         
+        /* Collapsible folder styles */
+        .folder-item {
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .folder-item:hover {
+            background-color: #f9fafb;
+        }
+        
+        .folder-toggle {
+            margin-right: 4px;
+            font-size: 8px;
+            transition: transform 0.2s ease;
+            user-select: none;
+            display: inline-block;
+        }
+        
+        .folder-toggle.collapsed {
+            transform: rotate(-90deg);
+        }
+        
+        .folder-children {
+            margin-left: 16px;
+            border-left: 1px solid #e5e7eb;
+            padding-left: 8px;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .folder-children.collapsed {
+            display: none;
+        }
+        
+        .folder-children.expanded {
+            display: block;
+        }
+        
         .summary {
             margin-top: 30px;
             padding: 20px;
@@ -292,6 +333,32 @@ export function generateClientPDF(
             .folder-item, .file-item { page-break-inside: avoid; }
         }
     </style>
+    <script>
+        function toggleFolder(element) {
+            const toggle = element.querySelector('.folder-toggle');
+            const children = element.nextElementSibling;
+            
+            if (children && children.classList.contains('folder-children')) {
+                if (children.classList.contains('collapsed')) {
+                    children.classList.remove('collapsed');
+                    children.classList.add('expanded');
+                    toggle.classList.remove('collapsed');
+                } else {
+                    children.classList.add('collapsed');
+                    children.classList.remove('expanded');
+                    toggle.classList.add('collapsed');
+                }
+            }
+        }
+        
+        // Initialize all folders as expanded by default
+        document.addEventListener('DOMContentLoaded', function() {
+            const allFolderChildren = document.querySelectorAll('.folder-children');
+            allFolderChildren.forEach(child => {
+                child.classList.add('expanded');
+            });
+        });
+    </script>
 </head>
 <body>
     <div class="header">
@@ -321,12 +388,10 @@ export function generateClientPDF(
                         <div class="info-value">${countTotalFiles(folderStructure)} files</div>
                     </div>
         </div>
-        ${options.notes ? `
         <div style="margin-top: 15px; padding: 12px; background: white; border-radius: 8px;">
             <div class="info-label">Project Notes</div>
-            <div class="info-value">${options.notes}</div>
+            <div class="info-value">This report contains the complete file structure for "${options.projectName}" deliverables </div>
         </div>
-        ` : ''}
     </div>
 
     <div class="file-structure">
@@ -342,7 +407,6 @@ export function generateClientPDF(
 
     <div class="footer">
         <p>This report was generated automatically from the project file structure.</p>
-        <p>For questions about this project, please contact your project manager.</p>
     </div>
 </body>
 </html>`;
@@ -395,20 +459,24 @@ function generateFileStructureHTML(structure: FolderStructure[], options: PDFExp
     const nestClass = depth > 0 ? `nested-${Math.min(depth, 5)}` : '';
     
     if (isFolder) {
+      const hasChildren = item.children && item.children.length > 0;
       html += `
-        <div class="folder-item ${nestClass}">
+        <div class="folder-item ${nestClass}" ${hasChildren ? 'onclick="toggleFolder(this)"' : ''}>
           <div class="item-info">
-            <div class="item-icon folder-icon">F</div>
+            ${hasChildren ? '<span class="folder-toggle">▼</span>' : ''}
+            <div class="item-icon folder-icon">📁</div>
             <div class="item-name folder-name">${item.name}</div>
           </div>
           <div class="item-meta">
-            ${item.children ? `${item.children.length} items` : ''}
+            ${hasChildren ? `${item.children!.length} items` : ''}
           </div>
         </div>
       `;
       
-      if (item.children) {
+      if (hasChildren && item.children) {
+        html += `<div class="folder-children">`;
         html += generateFileStructureHTML(item.children, options, depth + 1);
+        html += `</div>`;
       }
     } else {
       const iconClass = getFileIconClass(item.name);

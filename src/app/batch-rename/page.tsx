@@ -324,7 +324,7 @@ export default function BatchRenamePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50/80 to-orange-50/80 dark:from-red-900/10 dark:to-orange-900/10">
-      <div className="w-full mx-auto px-6 py-8">
+      <div className="w-full mx-auto px-3 sm:px-6 py-8">
         {/* Welcome Section */}
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-red-700 to-red-900 dark:from-rose-200 dark:to-orange-200 bg-clip-text text-transparent">
@@ -338,7 +338,7 @@ export default function BatchRenamePage() {
           {files.length === 0 && (
             <div className="w-full max-w-5xl mx-auto mb-12">
               <div
-                className={`relative border-2 border-dashed rounded-xl p-12 text-center transition-all duration-300 cursor-pointer transform hover:scale-105 hover:shadow-2xl ${
+                className={`relative border-2 border-dashed rounded-xl p-6 sm:p-12 text-center transition-all duration-300 cursor-pointer transform hover:scale-105 hover:shadow-2xl ${
                   isDragOver
                     ? 'border-red-600 bg-gradient-to-br from-rose-50 to-pink-50 dark:bg-gradient-to-br dark:from-red-900/20 dark:to-rose-900/20 shadow-xl scale-105'
                     : 'border-rose-300 dark:border-rose-600 hover:border-red-600 hover:bg-gradient-to-br hover:from-rose-100 hover:to-orange-100 dark:hover:from-red-800/40 dark:hover:to-rose-700/40 shadow-lg hover:shadow-red-500/20'
@@ -383,7 +383,7 @@ export default function BatchRenamePage() {
 
           {/* Settings Panel and File List */}
           {files.length > 0 && (
-            <div className="w-full mx-auto space-y-8 px-4">
+            <div className="w-full mx-auto space-y-8 px-2 sm:px-4">
               {/* Settings Panel */}
               <Card className="bg-gradient-to-br from-rose-50 to-orange-50 dark:from-red-900/10 dark:to-orange-900/10 border-rose-200 dark:border-rose-800">
                 <CardHeader>
@@ -396,7 +396,7 @@ export default function BatchRenamePage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {/* Two Column Layout */}
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     {/* Left Column - Rename Pattern */}
                     <div>
                       <label className="block text-sm font-medium text-red-700 dark:text-rose-300 mb-2">
@@ -419,24 +419,27 @@ export default function BatchRenamePage() {
                       <label className="block text-sm font-medium text-red-700 dark:text-rose-300 mb-2">
                         Target Directory
                       </label>
-                      <div className="flex gap-2">
-                        <Input
-                          value={targetDirectory || 'No directory selected'}
-                          placeholder="Click Browse to select directory..."
-                          readOnly
-                          className="border-rose-300 dark:border-rose-600 bg-rose-50 dark:bg-red-800/20"
-                        />
+                      
+                      {/* Row 1: Browse Button */}
+                      <div className="mb-3">
                         <Button 
                           onClick={selectTargetDirectory}
                           variant="outline"
-                          className="border-rose-300 dark:border-rose-600 text-red-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-red-800/30 shrink-0"
+                          className="w-full border-rose-300 dark:border-rose-600 text-red-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-red-800/30"
                         >
                           <LuFolderCheck className="w-4 h-4 mr-2" />
                           Browse
                         </Button>
                       </div>
-                      <div className="mt-1 text-xs text-red-600 dark:text-rose-400">
-                        Select where renamed files will be created. Original files remain unchanged.
+                      
+                      {/* Row 2: Directory Status */}
+                      <div className="px-1">
+                        <div className="text-xs text-red-700 dark:text-rose-300 bg-rose-50 dark:bg-red-800/20 rounded-lg px-2 py-2 border border-rose-200 dark:border-rose-600">
+                          {targetDirectory || 'No directory selected'}
+                        </div>
+                        <div className="mt-1 text-xs text-red-600 dark:text-rose-400">
+                          Select where renamed files will be created. Original files remain unchanged.
+                        </div>
                       </div>
                     </div>
                   </div>
