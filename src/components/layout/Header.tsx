@@ -10,7 +10,7 @@ export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navItems = [
-    { href: '/', label: 'Home' },
+    { href: '/', label: 'File Structure' },
     { href: '/batch-rename', label: 'Batch Rename' },
     { href: '/contact', label: 'Contact' },
   ];
