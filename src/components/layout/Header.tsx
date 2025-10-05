@@ -12,6 +12,7 @@ export function Header() {
   const navItems = [
     { href: '/', label: 'File Structure' },
     { href: '/batch-rename', label: 'Batch Rename' },
+    { href: '/mp4-to-wmv', label: 'MP4 to WMV' },
     { href: '/contact', label: 'Contact' },
   ];
 
