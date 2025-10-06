@@ -126,7 +126,7 @@ export default function ContactPage() {
       <div className="container mx-auto px-6 py-12">
         {/* Header Section */}
         <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold mb-4">
+          <h1 className="text-3xl font-bold mb-6">
             <span className="bg-gradient-to-r from-red-700 to-red-900 dark:from-rose-200 dark:to-orange-200 bg-clip-text text-transparent">Get in </span>
             <span className="bg-gradient-to-r from-red-600 to-red-800 dark:from-rose-300 dark:to-orange-300 bg-clip-text text-transparent">Touch</span>
           </h1>
@@ -333,43 +333,43 @@ export default function ContactPage() {
         <div className="mt-20">
           <Card className="border-rose-200 dark:border-rose-700 bg-gradient-to-br from-white/80 to-rose-50/80 dark:from-red-900/20 dark:to-rose-900/20 max-w-5xl mx-auto">
             <CardHeader>
-              <CardTitle className="text-3xl font-bold text-red-700 dark:text-rose-300 text-center">
+              <CardTitle className="text-2xl font-bold text-red-700 dark:text-rose-300 text-center">
                 Frequently Asked Questions
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-8">
+            <CardContent className="space-y-6">
               <div>
-                <h3 className="text-lg font-semibold text-red-700 dark:text-rose-300 mb-2">
+                <h3 className="text-base font-semibold text-red-700 dark:text-rose-300 mb-2">
                   How do I request a new tool?
                 </h3>
-                <p className="text-red-600 dark:text-rose-400">
+                <p className="text-sm text-red-600 dark:text-rose-400">
                   Use the contact form above and select &quot;Feature Request&quot; as your subject. Describe the tool you&apos;d like to see and how it would help you.
                 </p>
               </div>
 
               <div>
-                <h3 className="text-lg font-semibold text-red-700 dark:text-rose-300 mb-2">
+                <h3 className="text-base font-semibold text-red-700 dark:text-rose-300 mb-2">
                   Is my data secure when using Files & Folders?
                 </h3>
-                <p className="text-red-600 dark:text-rose-400">
+                <p className="text-sm text-red-600 dark:text-rose-400">
                   Yes! All tools run entirely in your browser. Your data never leaves your device and we don&apos;t store any information you process.
                 </p>
               </div>
 
               <div>
-                <h3 className="text-lg font-semibold text-red-700 dark:text-rose-300 mb-2">
+                <h3 className="text-base font-semibold text-red-700 dark:text-rose-300 mb-2">
                   Can I use Files & Folders for commercial projects?
                 </h3>
-                <p className="text-red-600 dark:text-rose-400">
+                <p className="text-sm text-red-600 dark:text-rose-400">
                   Absolutely! Files & Folders is free to use for both personal and commercial projects.
                 </p>
               </div>
 
               <div>
-                <h3 className="text-lg font-semibold text-red-700 dark:text-rose-300 mb-2">
+                <h3 className="text-base font-semibold text-red-700 dark:text-rose-300 mb-2">
                   Do you offer API access?
                 </h3>
-                <p className="text-red-600 dark:text-rose-400">
+                <p className="text-sm text-red-600 dark:text-rose-400">
                   Currently, Files & Folders is a browser-based tool collection. API access is not available at this time.
                 </p>
               </div>

@@ -36,6 +36,7 @@ export default function BatchRenamePage() {
   const [targetDirectory, setTargetDirectory] = useState<string>('');
   const [isApplying, setIsApplying] = useState(false);
   const [applyStatus, setApplyStatus] = useState<string>('');
+  const [progress, setProgress] = useState(0);
 
   const processFiles = (fileList: FileList) => {
     const processedFiles: FileItem[] = [];
@@ -228,6 +229,8 @@ export default function BatchRenamePage() {
         
         for (let i = 0; i < files.length; i++) {
           const fileItem = files[i];
+          const currentProgress = Math.round(((i + 1) / files.length) * 100);
+          setProgress(currentProgress);
           setApplyStatus(`Writing ${fileItem.newName} to ${targetDirectory} (${i + 1}/${files.length})`);
           
           try {
@@ -253,6 +256,8 @@ export default function BatchRenamePage() {
         
         if (successCount === files.length) {
           setApplyStatus(`✅ Successfully created ${successCount} renamed files in "${targetDirectory}"!`);
+          // Play completion sound
+          playCompletionSound();
         } else {
           setApplyStatus(`⚠️ Created ${successCount} files, ${errorCount} failed. Check "${targetDirectory}" directory.`);
         }
@@ -276,6 +281,8 @@ export default function BatchRenamePage() {
           
           for (let i = 0; i < files.length; i++) {
             const fileItem = files[i];
+            const currentProgress = Math.round(((i + 1) / files.length) * 100);
+            setProgress(currentProgress);
             setApplyStatus(`Downloading ${fileItem.newName} (${i + 1}/${files.length})`);
             
             // Create download link for each renamed file
@@ -293,6 +300,8 @@ export default function BatchRenamePage() {
           }
           
           setApplyStatus(`✅ Downloaded ${files.length} renamed files. Manually move them to "${targetDirectory}".`);
+          // Play completion sound
+          playCompletionSound();
         }
       }
       
@@ -302,6 +311,7 @@ export default function BatchRenamePage() {
       console.error('Rename process failed:', error);
     } finally {
       setIsApplying(false);
+      setProgress(0);
       // Clear status after 12 seconds for success messages
       setTimeout(() => {
         if (applyStatus.includes('✅') || applyStatus.includes('⚠️')) {
@@ -311,11 +321,25 @@ export default function BatchRenamePage() {
     }
   };
 
+  const playCompletionSound = () => {
+    try {
+      const audio = new Audio('/rnd_okay.wav');
+      audio.volume = 0.5; // Set volume to 50%
+      audio.play().catch(error => {
+        console.log('Could not play completion sound:', error);
+        // Silently fail if audio can't be played (e.g., user hasn't interacted with page yet)
+      });
+    } catch (error) {
+      console.log('Audio not supported or file not found:', error);
+    }
+  };
+
   const resetFiles = () => {
     setFiles([]);
     setPattern('$N_#');
     setTargetDirectory('');
     setApplyStatus('');
+    setProgress(0);
     // Clear the stored directory handle
     const windowWithHandle = window as unknown as { selectedDirectoryHandle?: FileSystemDirectoryHandle };
     if (windowWithHandle.selectedDirectoryHandle) {
@@ -323,12 +347,51 @@ export default function BatchRenamePage() {
     }
   };
 
+  // Sort files by filename and arrange for column-wise filling
+  const getSortedFilesForColumnDisplay = () => {
+    const sorted = [...files].sort((a, b) => a.newName.localeCompare(b.newName));
+    const totalFiles = sorted.length;
+    const columns = 3; // lg:grid-cols-3
+    const itemsPerColumn = Math.ceil(totalFiles / columns);
+    
+    // Create a grid array to arrange items column-wise
+    const grid: (FileItem | null)[][] = [];
+    
+    // Initialize grid with empty slots
+    for (let row = 0; row < itemsPerColumn; row++) {
+      grid[row] = new Array(columns).fill(null);
+    }
+    
+    // Fill the grid column by column
+    let fileIndex = 0;
+    for (let col = 0; col < columns && fileIndex < totalFiles; col++) {
+      for (let row = 0; row < itemsPerColumn && fileIndex < totalFiles; row++) {
+        grid[row][col] = sorted[fileIndex];
+        fileIndex++;
+      }
+    }
+    
+    // Flatten the grid row by row (which CSS grid will display)
+    const result: FileItem[] = [];
+    for (let row = 0; row < itemsPerColumn; row++) {
+      for (let col = 0; col < columns; col++) {
+        if (grid[row][col]) {
+          result.push(grid[row][col]!);
+        }
+      }
+    }
+    
+    return result;
+  };
+  
+  const sortedFiles = getSortedFilesForColumnDisplay();
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50/80 to-orange-50/80 dark:from-red-900/10 dark:to-orange-900/10">
       <div className="w-full mx-auto px-3 sm:px-6 py-8">
         {/* Welcome Section */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-red-700 to-red-900 dark:from-rose-200 dark:to-orange-200 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold mb-6 bg-gradient-to-r from-red-700 to-red-900 dark:from-rose-200 dark:to-orange-200 bg-clip-text text-transparent">
             Batch Rename Files
           </h1>
           <p className="text-lg md:text-xl text-red-600 dark:text-rose-400 mb-8 max-w-2xl mx-auto leading-relaxed">
@@ -382,11 +445,9 @@ export default function BatchRenamePage() {
             </div>
           )}
 
-          {/* Settings Panel and File List */}
-          {files.length > 0 && (
-            <div className="w-full mx-auto space-y-8 px-2 sm:px-4">
-              {/* Settings Panel */}
-              <Card className="bg-gradient-to-br from-rose-50 to-orange-50 dark:from-red-900/10 dark:to-orange-900/10 border-rose-200 dark:border-rose-800">
+          {/* Settings Panel - Always Visible */}
+          <div className="w-full max-w-5xl mx-auto mb-8 px-2 sm:px-4">
+            <Card className="bg-gradient-to-br from-rose-50 to-orange-50 dark:from-red-900/10 dark:to-orange-900/10 border-rose-200 dark:border-rose-800">
                 <CardHeader>
                   <CardTitle className="text-red-800 dark:text-rose-200 flex items-center gap-2">
                     <div className="w-8 h-8 bg-gradient-to-br from-red-600 to-red-800 rounded-lg flex items-center justify-center">
@@ -442,6 +503,18 @@ export default function BatchRenamePage() {
                           Select where renamed files will be created. Original files remain unchanged.
                         </div>
                       </div>
+                      
+                      {/* Reset Button - Far Right */}
+                      <div className="mt-4 flex justify-end">
+                        <Button 
+                          onClick={resetFiles}
+                          variant="outline"
+                          className="border-rose-300 dark:border-rose-600 text-red-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-red-800/30"
+                        >
+                          <LuRefreshCw className="w-4 h-4 mr-2" />
+                          Reset
+                        </Button>
+                      </div>
                     </div>
                   </div>
                   
@@ -454,28 +527,53 @@ export default function BatchRenamePage() {
                     </div>
                   )}
                   
-                  <div className="flex gap-2 flex-wrap">
-                    <Button 
-                      onClick={applyRenames}
-                      disabled={isApplying || files.length === 0 || !targetDirectory}
-                      className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      <LuPlay className="w-4 h-4 mr-2" />
-                      {isApplying ? 'Processing...' : 'Batch Rename'}
-                    </Button>
-                    <Button 
-                      onClick={resetFiles}
-                      variant="outline"
-                      className="border-rose-300 dark:border-rose-600 text-red-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-red-800/30"
-                    >
-                      <LuRefreshCw className="w-4 h-4 mr-2" />
-                      Reset
-                    </Button>
+                  {/* Progress Bar and Batch Rename Button */}
+                  <div className="space-y-3">
+                    {/* Progress Bar - Always Visible */}
+                    <div className="w-full">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-sm font-medium text-red-700 dark:text-rose-300">
+                          {isApplying ? 'Processing files...' : 'Ready to process'}
+                        </span>
+                        <span className="text-sm text-red-600 dark:text-rose-400">
+                          {progress}%
+                        </span>
+                      </div>
+                      <div className="w-full bg-rose-200 dark:bg-red-800/30 rounded-full h-3 overflow-hidden">
+                        <div 
+                          className={`h-full rounded-full transition-all duration-500 ease-out relative ${
+                            isApplying 
+                              ? 'bg-gradient-to-r from-red-600 to-red-700' 
+                              : 'bg-gradient-to-r from-rose-300 to-rose-400 dark:from-red-700/50 dark:to-red-600/50'
+                          }`}
+                          style={{ width: `${progress}%` }}
+                        >
+                          {isApplying && (
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse"></div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Batch Rename Button */}
+                    <div className="flex justify-start">
+                      <Button 
+                        onClick={applyRenames}
+                        disabled={isApplying || files.length === 0 || !targetDirectory}
+                        className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white disabled:opacity-50 disabled:cursor-not-allowed px-8 py-3 text-base font-semibold"
+                      >
+                        <LuPlay className="w-5 h-5 mr-2" />
+                        {isApplying ? 'Processing...' : 'Batch Rename'}
+                      </Button>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
+            </div>
 
-              {/* File List */}
+          {/* File List - Only show when files are selected */}
+          {files.length > 0 && (
+            <div className="w-full max-w-5xl mx-auto px-2 sm:px-4">
               <Card className="bg-gradient-to-br from-rose-50 to-orange-50 dark:from-red-900/10 dark:to-orange-900/10 border-rose-200 dark:border-rose-800">
                 <CardHeader>
                   <CardTitle className="text-red-800 dark:text-rose-200 flex items-center gap-2">
@@ -488,7 +586,7 @@ export default function BatchRenamePage() {
                 <CardContent className="p-0">
                   <div className="border border-rose-300 dark:border-rose-600 bg-white dark:bg-gray-900">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0">
-                      {files.map((fileItem, index) => (
+                      {sortedFiles.map((fileItem, index) => (
                         <div 
                           key={index} 
                           className="px-3 py-2 text-xs font-medium text-red-800 dark:text-rose-200 hover:bg-rose-50 dark:hover:bg-red-900/10 transition-colors border-r border-b border-rose-200 dark:border-rose-700 last:border-r-0"

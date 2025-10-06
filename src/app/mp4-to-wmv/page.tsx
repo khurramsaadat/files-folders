@@ -561,7 +561,7 @@ export default function Mp4ToWmvPage() {
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-red-700 to-red-900 dark:from-rose-200 dark:to-orange-200 bg-clip-text text-transparent mb-2">
+          <h1 className="text-3xl font-bold mb-6 bg-gradient-to-r from-red-700 to-red-900 dark:from-rose-200 dark:to-orange-200 bg-clip-text text-transparent">
             MP4 to WMV Converter
           </h1>
           <p className="text-lg text-red-600 dark:text-rose-400 max-w-2xl mx-auto mb-2">

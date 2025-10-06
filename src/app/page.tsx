@@ -232,8 +232,8 @@ function DashboardContent() {
   return (
     <div className="space-y-6">
       {/* Welcome Section */}
-      <div className="text-center space-y-3">
-        <h1 className="text-3xl font-bold bg-gradient-to-r from-red-700 to-red-900 dark:from-rose-200 dark:to-orange-200 bg-clip-text text-transparent">
+      <div className="text-center">
+        <h1 className="text-3xl font-bold mb-6 bg-gradient-to-r from-red-700 to-red-900 dark:from-rose-200 dark:to-orange-200 bg-clip-text text-transparent">
           Welcome to Files & Folders
         </h1>
         <p className="text-base text-red-600 dark:text-rose-400 max-w-2xl mx-auto">
