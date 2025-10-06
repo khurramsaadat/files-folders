@@ -254,11 +254,15 @@ export default function Mp4ToWmvPage() {
       // Build FFmpeg command based on settings
       const args = [
         '-i', inputName,
-        '-c:v', 'wmv2', // WMV codec
+        '-c:v', 'wmv3', // Windows Media Video 9 codec
         '-s', `${file.settings.resolution.width}x${file.settings.resolution.height}`,
         '-r', file.settings.frameRate.toString(),
         '-b:v', `${file.settings.maxBitrate}k`,
-        '-c:a', 'wmav2', // WMA audio codec
+        '-c:a', 'wmav2', // Windows Media Audio codec
+        '-ar', '44100', // Sample Rate: 44100 Hz
+        '-ac', '2', // Channels: Stereo
+        '-sample_fmt', 's16', // Sample Size: 16 bit (FFmpeg equivalent)
+        '-b:a', '440k', // Audio Bitrate: 440 kbps
         '-y', // Overwrite output file
         outputName
       ];
