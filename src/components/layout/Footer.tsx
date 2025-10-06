@@ -22,6 +22,10 @@ export function Footer() {
             <p className="text-sm text-red-600 dark:text-rose-400">
               © {currentYear} Files & Folders App. Made with ❤️ for better file organization.
             </p>
+            <p className="text-xs text-red-500/80 dark:text-rose-400/80 mt-1">
+              For the best experience with file operations and conversions, we recommend using 
+              <span className="font-medium text-red-600 dark:text-rose-300"> Google Chrome</span>
+            </p>
           </div>
 
           {/* Right Section - Version */}

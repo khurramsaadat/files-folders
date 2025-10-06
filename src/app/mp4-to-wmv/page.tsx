@@ -311,6 +311,74 @@ export default function Mp4ToWmvPage() {
     }
   }, [targetDirectory, useFallbackMode]);
 
+  // Open target directory in file explorer
+  const openTargetDirectory = useCallback(async () => {
+    if (targetDirectory && !useFallbackMode) {
+      // For File System Access API, we can't directly open the directory
+      // But we can show a helpful notification with the directory name
+      const directoryName = targetDirectory.name;
+      
+      // Create a temporary notification element
+      const notification = document.createElement('div');
+      notification.className = 'fixed top-4 right-4 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2';
+      notification.innerHTML = `
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+        </svg>
+        <span>Files saved in "${directoryName}" directory. Check your file explorer!</span>
+      `;
+      
+      document.body.appendChild(notification);
+      
+      // Remove notification after 4 seconds
+      setTimeout(() => {
+        if (document.body.contains(notification)) {
+          document.body.removeChild(notification);
+        }
+      }, 4000);
+      
+    } else if (useFallbackMode) {
+      // For fallback mode, show Downloads folder guidance
+      const notification = document.createElement('div');
+      notification.className = 'fixed top-4 right-4 bg-blue-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2';
+      notification.innerHTML = `
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/>
+        </svg>
+        <span>Files downloaded to your Downloads folder. Press Ctrl+J to open Downloads!</span>
+      `;
+      
+      document.body.appendChild(notification);
+      
+      // Remove notification after 5 seconds
+      setTimeout(() => {
+        if (document.body.contains(notification)) {
+          document.body.removeChild(notification);
+        }
+      }, 5000);
+      
+    } else {
+      // No directory selected
+      const notification = document.createElement('div');
+      notification.className = 'fixed top-4 right-4 bg-amber-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2';
+      notification.innerHTML = `
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+        </svg>
+        <span>Please select a target directory first to save your converted files.</span>
+      `;
+      
+      document.body.appendChild(notification);
+      
+      // Remove notification after 4 seconds
+      setTimeout(() => {
+        if (document.body.contains(notification)) {
+          document.body.removeChild(notification);
+        }
+      }, 4000);
+    }
+  }, [targetDirectory, useFallbackMode]);
+
   // Save file using pre-created handle or download
   const saveConvertedFile = useCallback(async (blob: Blob, fileName: string, fileHandle?: FileSystemFileHandle) => {
     if (fileHandle && !useFallbackMode) {
@@ -493,92 +561,100 @@ export default function Mp4ToWmvPage() {
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-red-700 to-red-900 dark:from-rose-200 dark:to-orange-200 bg-clip-text text-transparent mb-4">
+          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-red-700 to-red-900 dark:from-rose-200 dark:to-orange-200 bg-clip-text text-transparent mb-2">
             MP4 to WMV Converter
           </h1>
+          <p className="text-lg text-red-600 dark:text-rose-400 max-w-2xl mx-auto mb-2">
+            Professional video conversion with customizable encoding settings.
+          </p>
           <p className="text-lg text-red-600 dark:text-rose-400 max-w-2xl mx-auto">
-            Professional video conversion with customizable encoding settings. Convert MP4, MOV, and AVI files to WMV format.
+            Convert MP4, MOV, and AVI files to WMV format.
           </p>
         </div>
 
-        {/* Upload Area */}
-        <div className="max-w-4xl mx-auto mb-8">
-          <div
-            className={cn(
-              "border-2 border-dashed rounded-2xl p-8 text-center transition-all duration-300 cursor-pointer",
-              isDragOver
-                ? "border-red-500 bg-red-50 dark:bg-red-900/20"
-                : "border-red-300 dark:border-red-700 hover:border-red-400 dark:hover:border-red-600 hover:bg-red-50/50 dark:hover:bg-red-900/10"
-            )}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
-            onClick={() => fileInputRef.current?.click()}
-          >
-            <input
-              ref={fileInputRef}
-              type="file"
-              multiple
-              accept=".mp4,.mov,.avi,video/*"
-              onChange={handleFileSelect}
-              className="hidden"
-            />
-            <LuUpload className="w-12 h-12 text-red-500 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-red-800 dark:text-rose-300 mb-2">
-              Upload Video Files
-            </h3>
-            <p className="text-red-600 dark:text-rose-400 mb-4">
-              Drag and drop your MP4, MOV, or AVI files here, or click to browse
-            </p>
-            <div className="text-sm text-red-500 dark:text-rose-500">
-              Supported formats: MP4, MOV, AVI
-            </div>
-          </div>
-        </div>
-
-        {/* Target Directory Selection */}
-        <div className="max-w-4xl mx-auto mb-8">
-          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-rose-200 dark:border-rose-800 p-6">
-            <h3 className="text-lg font-semibold text-red-800 dark:text-rose-300 mb-4 flex items-center gap-2">
-              <LuSettings className="w-5 h-5" />
-              Output Settings
-            </h3>
+        {/* 2x2 Grid Layout */}
+        <div className="max-w-7xl mx-auto mb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-10 gap-6">
             
-            <div className="space-y-4">
-              <TargetDirectory
-                onDirectorySelected={handleDirectorySelected}
-                selectedPath={targetDirectoryPath}
-                disabled={useFallbackMode}
-                title="Target Directory for WMV Files"
-                description={useFallbackMode 
-                  ? 'Files will be downloaded individually to your Downloads folder'
-                  : 'Select where the converted WMV files will be saved'
-                }
-                className="mb-4"
-              />
-              
-              {!targetDirectory && !useFallbackMode && (
-                <div className="flex gap-3">
-                  <button
-                    onClick={enableFallbackMode}
-                    className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-colors font-medium flex items-center gap-2"
-                  >
-                    <LuDownload className="w-4 h-4" />
-                    Use Downloads Fallback
-                  </button>
-                  <p className="text-xs text-amber-600 dark:text-amber-400 flex items-center">
-                    Or use the fallback option to download files individually
-                  </p>
+            {/* Top Row - Upload Area and Output Settings */}
+            {/* Left Column - Upload Area (60%) */}
+            <div className="lg:col-span-6">
+              <div
+                className={cn(
+                  "border-2 border-dashed rounded-2xl p-8 text-center transition-all duration-300 cursor-pointer h-full",
+                  isDragOver
+                    ? "border-red-500 bg-red-50 dark:bg-red-900/20"
+                    : "border-red-300 dark:border-red-700 hover:border-red-400 dark:hover:border-red-600 hover:bg-red-50/50 dark:hover:bg-red-900/10"
+                )}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  multiple
+                  accept=".mp4,.mov,.avi,video/*"
+                  onChange={handleFileSelect}
+                  className="hidden"
+                />
+                <LuUpload className="w-12 h-12 text-red-500 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-red-800 dark:text-rose-300 mb-2">
+                  Upload Video Files
+                </h3>
+                <p className="text-red-600 dark:text-rose-400 mb-4">
+                  Drag and drop your MP4, MOV, or AVI files here, or click to browse
+                </p>
+                <div className="text-sm text-red-500 dark:text-rose-500">
+                  Supported formats: MP4, MOV, AVI
                 </div>
-              )}
+              </div>
             </div>
-          </div>
-        </div>
 
-        {/* Conversion Queue */}
-        {files.length > 0 && (
-          <div className="max-w-6xl mx-auto">
-            <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-rose-200 dark:border-rose-800 overflow-hidden">
+            {/* Right Column - Output Settings (40%) */}
+            <div className="lg:col-span-4">
+              <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-rose-200 dark:border-rose-800 p-6 h-full">
+                <h3 className="text-lg font-semibold text-red-800 dark:text-rose-300 mb-4 flex items-center gap-2">
+                  <LuSettings className="w-5 h-5" />
+                  Output Settings
+                </h3>
+                
+                <div className="space-y-4">
+                  <TargetDirectory
+                    onDirectorySelected={handleDirectorySelected}
+                    selectedPath={targetDirectoryPath}
+                    disabled={useFallbackMode}
+                    title="Target Directory for WMV Files"
+                    description={useFallbackMode 
+                      ? 'Files will be downloaded individually to your Downloads folder'
+                      : 'Select where the converted WMV files will be saved'
+                    }
+                    className="mb-4"
+                  />
+                  
+                  {!targetDirectory && !useFallbackMode && (
+                    <div className="space-y-2">
+                      <button
+                        onClick={enableFallbackMode}
+                        className="w-full px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-colors font-medium flex items-center justify-center gap-2"
+                      >
+                        <LuDownload className="w-4 h-4" />
+                        Use Downloads Fallback
+                      </button>
+                      <p className="text-xs text-amber-600 dark:text-amber-400 text-center">
+                        Or use the fallback option to download files individually
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom Row - Conversion Queue (Full Width) */}
+            {files.length > 0 && (
+              <div className="lg:col-span-10 mt-6">
+                <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-rose-200 dark:border-rose-800 overflow-hidden">
               {/* Queue Header */}
               <div className="bg-gradient-to-r from-red-600 to-red-700 text-white p-4">
                 <div className="flex items-center justify-between">
@@ -594,7 +670,7 @@ export default function Mp4ToWmvPage() {
                     )}
                     {!targetDirectoryPath && !useFallbackMode && (
                       <p className="text-sm text-yellow-200 mt-1">
-                        ⚠️ No target directory selected - Use Browse or Downloads fallback
+                        Please select the target directory
                       </p>
                     )}
                   </div>
@@ -612,7 +688,9 @@ export default function Mp4ToWmvPage() {
                       className="px-6 py-2 bg-white text-red-600 hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg font-medium transition-colors flex items-center gap-2"
                       title={(!targetDirectory && !targetDirectoryPath && !useFallbackMode) ? 'Please select a target directory or use Downloads fallback' : ''}
                     >
-                      <LuPlay className="w-4 h-4" />
+                      <svg className="w-4 h-4 fill-green-600" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z"/>
+                      </svg>
                       {isConverting ? 'Converting...' : 'Start Queue'}
                     </button>
                   </div>
@@ -678,7 +756,11 @@ export default function Mp4ToWmvPage() {
                       {/* Actions */}
                       <div className="flex gap-2">
                         {file.status === 'completed' && (
-                          <button className="p-2 text-green-600 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-colors">
+                          <button 
+                            onClick={openTargetDirectory}
+                            className="p-2 text-green-600 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-colors"
+                            title="Open target directory"
+                          >
                             <LuDownload className="w-4 h-4" />
                           </button>
                         )}
@@ -855,9 +937,12 @@ export default function Mp4ToWmvPage() {
                   Apply Settings
                 </button>
               </div>
-            </div>
+                </div>
+              </div>
+            )}
+            
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
