@@ -254,15 +254,11 @@ export default function Mp4ToWmvPage() {
       // Build FFmpeg command based on settings
       const args = [
         '-i', inputName,
-        '-c:v', 'wmv3', // Windows Media Video 9 codec
+        '-c:v', 'wmv2', // WMV codec
         '-s', `${file.settings.resolution.width}x${file.settings.resolution.height}`,
         '-r', file.settings.frameRate.toString(),
         '-b:v', `${file.settings.maxBitrate}k`,
-        '-c:a', 'wmav2', // Windows Media Audio codec
-        '-ar', '44100', // Sample Rate: 44100 Hz
-        '-ac', '2', // Channels: Stereo
-        '-sample_fmt', 's16', // Sample Size: 16 bit (FFmpeg equivalent)
-        '-b:a', '440k', // Audio Bitrate: 440 kbps
+        '-c:a', 'wmav2', // WMA audio codec
         '-y', // Overwrite output file
         outputName
       ];
@@ -659,129 +655,131 @@ export default function Mp4ToWmvPage() {
             {files.length > 0 && (
               <div className="lg:col-span-10 mt-6">
                 <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-rose-200 dark:border-rose-800 overflow-hidden">
-              {/* Queue Header */}
-              <div className="bg-gradient-to-r from-red-600 to-red-700 text-white p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h2 className="text-xl font-semibold flex items-center gap-2">
-                      <LuVideo className="w-5 h-5" />
-                      Conversion Queue ({files.length} files)
-                    </h2>
-                    {targetDirectoryPath && (
-                      <p className="text-sm text-red-100 mt-1">
-                        Output: {targetDirectoryPath}
-                      </p>
-                    )}
-                    {!targetDirectoryPath && !useFallbackMode && (
-                      <p className="text-sm text-yellow-200 mt-1">
-                        Please select the target directory
-                      </p>
-                    )}
-                  </div>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => openSettings(null)}
-                      className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors flex items-center gap-2"
-                    >
-                      <LuSettings className="w-4 h-4" />
-                      Settings for All
-                    </button>
-                    <button
-                      onClick={startConversion}
-                      disabled={isConverting || files.every(f => f.status === 'completed') || (!targetDirectory && !targetDirectoryPath && !useFallbackMode)}
-                      className="px-6 py-2 bg-white text-red-600 hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg font-medium transition-colors flex items-center gap-2"
-                      title={(!targetDirectory && !targetDirectoryPath && !useFallbackMode) ? 'Please select a target directory or use Downloads fallback' : ''}
-                    >
-                      <svg className="w-4 h-4 fill-green-600" viewBox="0 0 24 24">
-                        <path d="M8 5v14l11-7z"/>
-                      </svg>
-                      {isConverting ? 'Converting...' : 'Start Queue'}
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Queue Items */}
-              <div className="divide-y divide-rose-100 dark:divide-rose-800">
-                {files.map((file) => (
-                  <div key={file.id} className="p-4 hover:bg-rose-50/50 dark:hover:bg-red-900/10 transition-colors">
-                    <div className="flex items-center gap-4">
-                      {/* Thumbnail */}
-                      <div className="w-16 h-12 bg-gradient-to-br from-red-100 to-rose-100 dark:from-red-900/30 dark:to-rose-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <LuVideo className="w-6 h-6 text-red-500" />
-                      </div>
-
-                      {/* File Info */}
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-medium text-red-800 dark:text-rose-300 truncate">
-                          {file.name}
-                        </h3>
-                        <p className="text-sm text-red-600 dark:text-rose-400">
-                          {formatFileSize(file.size)}
-                        </p>
-                      </div>
-
-                      {/* Settings Summary */}
-                      <div className="hidden md:block">
-                        <button
-                          onClick={() => openSettings(file.id)}
-                          className="text-sm text-red-600 dark:text-rose-400 hover:text-red-700 dark:hover:text-rose-300 border border-red-300 dark:border-red-700 rounded-lg px-3 py-1 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
-                        >
-                          {getSettingsSummary(file.settings, file)}
-                        </button>
-                      </div>
-
-                      {/* Status */}
-                      <div className="text-center min-w-[100px]">
-                        {file.status === 'waiting' && (
-                          <span className="text-sm text-amber-600 dark:text-amber-400">Waiting</span>
+                  {/* Queue Header */}
+                  <div className="bg-gradient-to-r from-red-600 to-red-700 text-white p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h2 className="text-xl font-semibold flex items-center gap-2">
+                          <LuVideo className="w-5 h-5" />
+                          Conversion Queue ({files.length} files)
+                        </h2>
+                        {targetDirectoryPath && (
+                          <p className="text-sm text-red-100 mt-1">
+                            Output: {targetDirectoryPath}
+                          </p>
                         )}
-                        {file.status === 'converting' && (
-                          <div>
-                            <div className="text-sm text-blue-600 dark:text-blue-400 mb-1">
-                              {file.progress < 10 ? 'Loading engine...' : `Converting ${file.progress}%`}
-                            </div>
-                            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                              <div 
-                                className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all duration-300"
-                                style={{ width: `${file.progress}%` }}
-                              />
-                            </div>
-                          </div>
-                        )}
-                        {file.status === 'completed' && (
-                          <span className="text-sm text-green-600 dark:text-green-400">Completed</span>
-                        )}
-                        {file.status === 'error' && (
-                          <span className="text-sm text-red-600 dark:text-red-400">Error</span>
+                        {!targetDirectoryPath && !useFallbackMode && (
+                          <p className="text-sm text-yellow-200 mt-1">
+                            Please select the target directory
+                          </p>
                         )}
                       </div>
-
-                      {/* Actions */}
                       <div className="flex gap-2">
-                        {file.status === 'completed' && (
-                          <button 
-                            onClick={openTargetDirectory}
-                            className="p-2 text-green-600 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-colors"
-                            title="Open target directory"
-                          >
-                            <LuDownload className="w-4 h-4" />
-                          </button>
-                        )}
                         <button
-                          onClick={() => removeFile(file.id)}
-                          className="p-2 text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                          onClick={() => openSettings(null)}
+                          className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors flex items-center gap-2"
                         >
-                          <LuTrash2 className="w-4 h-4" />
+                          <LuSettings className="w-4 h-4" />
+                          Settings for All
+                        </button>
+                        <button
+                          onClick={startConversion}
+                          disabled={isConverting || files.every(f => f.status === 'completed') || (!targetDirectory && !targetDirectoryPath && !useFallbackMode)}
+                          className="px-6 py-2 bg-white text-red-600 hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg font-medium transition-colors flex items-center gap-2"
+                          title={(!targetDirectory && !targetDirectoryPath && !useFallbackMode) ? 'Please select a target directory or use Downloads fallback' : ''}
+                        >
+                          <svg className="w-4 h-4 fill-green-600" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z"/>
+                          </svg>
+                          {isConverting ? 'Converting...' : 'Start Queue'}
                         </button>
                       </div>
                     </div>
                   </div>
-                ))}
+
+                  {/* Queue Items */}
+                  <div className="divide-y divide-rose-100 dark:divide-rose-800">
+                    {files.map((file) => (
+                      <div key={file.id} className="p-4 hover:bg-rose-50/50 dark:hover:bg-red-900/10 transition-colors">
+                        <div className="flex items-center gap-4">
+                          {/* Thumbnail */}
+                          <div className="w-16 h-12 bg-gradient-to-br from-red-100 to-rose-100 dark:from-red-900/30 dark:to-rose-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <LuVideo className="w-6 h-6 text-red-500" />
+                          </div>
+
+                          {/* File Info */}
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-medium text-red-800 dark:text-rose-300 truncate">
+                              {file.name}
+                            </h3>
+                            <p className="text-sm text-red-600 dark:text-rose-400">
+                              {formatFileSize(file.size)}
+                            </p>
+                          </div>
+
+                          {/* Settings Summary */}
+                          <div className="hidden md:block">
+                            <button
+                              onClick={() => openSettings(file.id)}
+                              className="text-sm text-red-600 dark:text-rose-400 hover:text-red-700 dark:hover:text-rose-300 border border-red-300 dark:border-red-700 rounded-lg px-3 py-1 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                            >
+                              {getSettingsSummary(file.settings, file)}
+                            </button>
+                          </div>
+
+                          {/* Status */}
+                          <div className="text-center min-w-[100px]">
+                            {file.status === 'waiting' && (
+                              <span className="text-sm text-amber-600 dark:text-amber-400">Waiting</span>
+                            )}
+                            {file.status === 'converting' && (
+                              <div>
+                                <div className="text-sm text-blue-600 dark:text-blue-400 mb-1">
+                                  {file.progress < 10 ? 'Loading engine...' : `Converting ${file.progress}%`}
+                                </div>
+                                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                  <div 
+                                    className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all duration-300"
+                                    style={{ width: `${file.progress}%` }}
+                                  />
+                                </div>
+                              </div>
+                            )}
+                            {file.status === 'completed' && (
+                              <span className="text-sm text-green-600 dark:text-green-400">Completed</span>
+                            )}
+                            {file.status === 'error' && (
+                              <span className="text-sm text-red-600 dark:text-red-400">Error</span>
+                            )}
+                          </div>
+
+                          {/* Actions */}
+                          <div className="flex gap-2">
+                            {file.status === 'completed' && (
+                              <button 
+                                onClick={openTargetDirectory}
+                                className="p-2 text-green-600 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-colors"
+                                title="Open target directory"
+                              >
+                                <LuDownload className="w-4 h-4" />
+                              </button>
+                            )}
+                            <button
+                              onClick={() => removeFile(file.id)}
+                              className="p-2 text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                            >
+                              <LuTrash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
-            </div>
+            )}
           </div>
-        )}
+        </div>
 
         {/* Settings Modal */}
         {showSettings && (
@@ -941,12 +939,9 @@ export default function Mp4ToWmvPage() {
                   Apply Settings
                 </button>
               </div>
-                </div>
-              </div>
-            )}
-            
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
