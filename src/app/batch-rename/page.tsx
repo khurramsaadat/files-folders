@@ -202,7 +202,8 @@ export default function BatchRenamePage() {
           setApplyStatus(`Custom directory name set: ${customName}`);
         }
       } else {
-        setApplyStatus('Directory selection cancelled.');
+        // Don't show cancelled message - just clear any existing status
+        setApplyStatus('');
       }
       return null;
     }

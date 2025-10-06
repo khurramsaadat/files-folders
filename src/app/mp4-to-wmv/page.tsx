@@ -5,6 +5,8 @@ import { LuUpload, LuPlay, LuDownload, LuSettings, LuTrash2, LuX, LuVideo } from
 import { cn } from '@/lib/utils';
 import { FFmpeg } from '@ffmpeg/ffmpeg';
 import { fetchFile, toBlobURL } from '@ffmpeg/util';
+import TargetDirectory from '@/components/ui/target-directory';
+import type { FileSystemDirectoryHandle, FileSystemFileHandle } from '@/types/file-system';
 
 interface VideoFile {
   id: string;
@@ -168,41 +170,13 @@ export default function Mp4ToWmvPage() {
     setShowSettings(false);
   }, [selectedFileId, currentSettings]);
 
-  const selectTargetDirectory = useCallback(async () => {
-    try {
-      // Check if File System Access API is available
-      if ('showDirectoryPicker' in window && typeof (window as unknown as { showDirectoryPicker?: () => Promise<FileSystemDirectoryHandle> }).showDirectoryPicker === 'function') {
-        const dirHandle = await (window as unknown as { showDirectoryPicker: () => Promise<FileSystemDirectoryHandle> }).showDirectoryPicker();
-        setTargetDirectory(dirHandle);
-        setTargetDirectoryPath(dirHandle.name);
-      } else {
-        // Provide specific instructions for different browsers
-        const userAgent = navigator.userAgent.toLowerCase();
-        let browserMessage = '';
-        
-        if (userAgent.includes('brave')) {
-          browserMessage = `Brave Browser detected! To enable directory selection:
-
-1. Type 'brave://flags' in your address bar
-2. Search for "File System Access API"
-3. Set it to "Enabled"
-4. Restart Brave browser
-5. Refresh this page
-
-Alternative: You can use Chrome or Edge for immediate access.`;
-        } else if (userAgent.includes('firefox')) {
-          browserMessage = `Firefox doesn't support directory selection yet. Please use Chrome, Edge, or Brave browser for this feature.`;
-        } else if (userAgent.includes('safari')) {
-          browserMessage = `Safari doesn't support directory selection yet. Please use Chrome, Edge, or Brave browser for this feature.`;
-        } else {
-          browserMessage = `Directory selection is not supported in this browser. Please use Chrome, Edge, or Brave browser (with File System Access API enabled).`;
-        }
-        
-        alert(browserMessage);
-      }
-    } catch (error) {
-      // User cancelled the picker or other error
-      console.log('Directory selection cancelled or failed:', error);
+  const handleDirectorySelected = useCallback((directoryHandle: FileSystemDirectoryHandle | null, displayPath: string) => {
+    setTargetDirectory(directoryHandle);
+    setTargetDirectoryPath(displayPath);
+    
+    // Reset fallback mode when a directory is selected
+    if (directoryHandle) {
+      setUseFallbackMode(false);
     }
   }, []);
 
@@ -571,39 +545,32 @@ Alternative: You can use Chrome or Edge for immediate access.`;
             </h3>
             
             <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-red-700 dark:text-rose-400 mb-2">
-                  Target Directory for WMV Files
-                </label>
+              <TargetDirectory
+                onDirectorySelected={handleDirectorySelected}
+                selectedPath={targetDirectoryPath}
+                disabled={useFallbackMode}
+                title="Target Directory for WMV Files"
+                description={useFallbackMode 
+                  ? 'Files will be downloaded individually to your Downloads folder'
+                  : 'Select where the converted WMV files will be saved'
+                }
+                className="mb-4"
+              />
+              
+              {!targetDirectory && !useFallbackMode && (
                 <div className="flex gap-3">
                   <button
-                    onClick={selectTargetDirectory}
-                    disabled={useFallbackMode}
-                    className="px-4 py-2 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg hover:from-red-700 hover:to-red-800 transition-colors font-medium flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    onClick={enableFallbackMode}
+                    className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-colors font-medium flex items-center gap-2"
                   >
-                    <LuUpload className="w-4 h-4" />
-                    Browse
+                    <LuDownload className="w-4 h-4" />
+                    Use Downloads Fallback
                   </button>
-                  {!targetDirectory && !useFallbackMode && (
-                    <button
-                      onClick={enableFallbackMode}
-                      className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-colors font-medium flex items-center gap-2"
-                    >
-                      <LuDownload className="w-4 h-4" />
-                      Use Downloads
-                    </button>
-                  )}
-                  <div className="flex-1 px-3 py-2 bg-gray-50 dark:bg-slate-800 border border-red-300 dark:border-red-700 rounded-lg text-sm text-red-700 dark:text-rose-400">
-                    {targetDirectoryPath || 'No directory selected'}
-                  </div>
+                  <p className="text-xs text-amber-600 dark:text-amber-400 flex items-center">
+                    Or use the fallback option to download files individually
+                  </p>
                 </div>
-                <p className="text-xs text-red-500 dark:text-rose-500 mt-1">
-                  {useFallbackMode 
-                    ? 'Files will be downloaded individually to your Downloads folder'
-                    : 'Select where the converted WMV files will be saved, or use Downloads fallback'
-                  }
-                </p>
-              </div>
+              )}
             </div>
           </div>
         </div>
@@ -641,9 +608,9 @@ Alternative: You can use Chrome or Edge for immediate access.`;
                     </button>
                     <button
                       onClick={startConversion}
-                      disabled={isConverting || files.every(f => f.status === 'completed') || (!targetDirectory && !useFallbackMode)}
+                      disabled={isConverting || files.every(f => f.status === 'completed') || (!targetDirectory && !targetDirectoryPath && !useFallbackMode)}
                       className="px-6 py-2 bg-white text-red-600 hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg font-medium transition-colors flex items-center gap-2"
-                      title={(!targetDirectory && !useFallbackMode) ? 'Please select a target directory or use Downloads fallback' : ''}
+                      title={(!targetDirectory && !targetDirectoryPath && !useFallbackMode) ? 'Please select a target directory or use Downloads fallback' : ''}
                     >
                       <LuPlay className="w-4 h-4" />
                       {isConverting ? 'Converting...' : 'Start Queue'}
