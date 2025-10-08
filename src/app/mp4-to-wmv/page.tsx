@@ -226,6 +226,22 @@ export default function Mp4ToWmvPage() {
     }
   }, [ffmpegLoaded]);
 
+  // Generate custom WMV filename
+  const generateWMVFilename = useCallback((originalFileName: string): string => {
+    // Remove file extension from original name
+    const nameWithoutExt = originalFileName.replace(/\.[^/.]+$/, '');
+    
+    // Get current date in YYMMDD format
+    const now = new Date();
+    const year = now.getFullYear().toString().slice(-2);
+    const month = (now.getMonth() + 1).toString().padStart(2, '0');
+    const day = now.getDate().toString().padStart(2, '0');
+    const dateStr = `${year}${month}${day}`;
+    
+    // Format: 0000F-H_POS_OriginalFileName_ProjectName_10s_YYMMDD.wmv
+    return `0000F-H_POS_${nameWithoutExt}_ProjectName_10s_${dateStr}.wmv`;
+  }, []);
+
   // Convert single file to WMV
   const convertFileToWMV = useCallback(async (file: VideoFile): Promise<Blob | null> => {
     if (!ffmpegRef.current) {
@@ -421,7 +437,7 @@ export default function Mp4ToWmvPage() {
 
     // Pre-create file handles while we have user activation
     const waitingFiles = files.filter(f => f.status === 'waiting');
-    const fileNames = waitingFiles.map(f => `${f.name.replace(/\.[^/.]+$/, '')}.wmv`);
+    const fileNames = waitingFiles.map(f => generateWMVFilename(f.name));
     
     console.log('Preparing file handles for:', fileNames);
     const fileHandles = await prepareFileHandles(fileNames);
@@ -490,7 +506,7 @@ export default function Mp4ToWmvPage() {
             ));
 
             // Save converted file using pre-created handle
-            const fileName = `${file.name.replace(/\.[^/.]+$/, '')}.wmv`;
+            const fileName = generateWMVFilename(file.name);
             const fileHandle = fileHandles[fileName];
             const saved = await saveConvertedFile(convertedBlob, fileName, fileHandle);
 
@@ -532,7 +548,7 @@ export default function Mp4ToWmvPage() {
     
     console.log('Conversion process completed');
     setIsConverting(false);
-  }, [files, targetDirectory, useFallbackMode, ffmpegLoaded, initFFmpeg, convertFileToWMV, saveConvertedFile, prepareFileHandles]);
+  }, [files, targetDirectory, useFallbackMode, ffmpegLoaded, initFFmpeg, convertFileToWMV, saveConvertedFile, prepareFileHandles, generateWMVFilename]);
 
   const formatFileSize = (bytes: number) => {
     if (bytes === 0) return '0 Bytes';
@@ -656,11 +672,11 @@ export default function Mp4ToWmvPage() {
               <div className="lg:col-span-10 mt-6">
                 <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-rose-200 dark:border-rose-800 overflow-hidden">
                   {/* Queue Header */}
-                  <div className="bg-gradient-to-r from-red-600 to-red-700 text-white p-4">
+                  <div className="bg-gradient-to-r from-red-700 to-red-800 text-white p-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <h2 className="text-xl font-semibold flex items-center gap-2">
-                          <LuVideo className="w-5 h-5" />
+                        <h2 className="text-lg font-semibold flex items-center gap-2">
+                          <LuVideo className="w-4 h-4" />
                           Conversion Queue ({files.length} files)
                         </h2>
                         {targetDirectoryPath && (
@@ -675,101 +691,107 @@ export default function Mp4ToWmvPage() {
                         )}
                       </div>
                       <div className="flex gap-2">
-                        <button
-                          onClick={() => openSettings(null)}
-                          className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors flex items-center gap-2"
-                        >
-                          <LuSettings className="w-4 h-4" />
-                          Settings for All
-                        </button>
+                          <button
+                            onClick={() => openSettings(null)}
+                            className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors flex items-center gap-2"
+                          >
+                            <LuSettings className="w-4 h-4" />
+                            Settings for All
+                          </button>
                         <button
                           onClick={startConversion}
                           disabled={isConverting || files.every(f => f.status === 'completed') || (!targetDirectory && !targetDirectoryPath && !useFallbackMode)}
-                          className="px-6 py-2 bg-white text-red-600 hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg font-medium transition-colors flex items-center gap-2"
+                          className="px-4 py-2 bg-white text-red-700 hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg font-medium transition-colors flex items-center gap-2"
                           title={(!targetDirectory && !targetDirectoryPath && !useFallbackMode) ? 'Please select a target directory or use Downloads fallback' : ''}
                         >
-                          <svg className="w-4 h-4 fill-green-600" viewBox="0 0 24 24">
+                          <svg className="w-10 h-8 fill-green-600" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z"/>
                           </svg>
-                          {isConverting ? 'Converting...' : 'Start Queue'}
+                          {isConverting ? 'Converting...' : 'START'}
                         </button>
                       </div>
+                    </div>
+                  </div>
+
+                  {/* Column Headers */}
+                  <div className="bg-rose-50 dark:bg-red-900/20 border-b border-rose-200 dark:border-rose-800 px-4 py-3">
+                    <div className="grid grid-cols-12 gap-3 items-center text-sm font-normal text-red-800 dark:text-rose-300">
+                      <div className="col-span-3">Source File</div>
+                      <div className="col-span-4">Output File</div>
+                      <div className="col-span-3">Preset</div>
+                      <div className="col-span-1">Status</div>
+                      <div className="col-span-1">Actions</div>
                     </div>
                   </div>
 
                   {/* Queue Items */}
                   <div className="divide-y divide-rose-100 dark:divide-rose-800">
                     {files.map((file) => (
-                      <div key={file.id} className="p-4 hover:bg-rose-50/50 dark:hover:bg-red-900/10 transition-colors">
-                        <div className="flex items-center gap-4">
-                          {/* Thumbnail */}
-                          <div className="w-16 h-12 bg-gradient-to-br from-red-100 to-rose-100 dark:from-red-900/30 dark:to-rose-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
-                            <LuVideo className="w-6 h-6 text-red-500" />
-                          </div>
-
-                          {/* File Info */}
-                          <div className="flex-1 min-w-0">
-                            <h3 className="font-medium text-red-800 dark:text-rose-300 truncate">
+                      <div key={file.id} className="px-4 py-2 hover:bg-rose-50/50 dark:hover:bg-red-900/10 transition-colors">
+                        <div className="grid grid-cols-12 gap-3 items-center">
+                          {/* Source File */}
+                          <div className="col-span-3">
+                            <span className="text-xs font-normal text-red-800 dark:text-rose-300 truncate block">
                               {file.name}
-                            </h3>
-                            <p className="text-sm text-red-600 dark:text-rose-400">
-                              {formatFileSize(file.size)}
-                            </p>
+                            </span>
                           </div>
 
-                          {/* Settings Summary */}
-                          <div className="hidden md:block">
+                          {/* Output File */}
+                          <div className="col-span-4">
+                            <div className="flex items-center gap-1">
+                              <span className="text-xs font-normal text-red-600 dark:text-rose-400 truncate">
+                                {generateWMVFilename(file.name)}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Preset */}
+                          <div className="col-span-3">
                             <button
                               onClick={() => openSettings(file.id)}
-                              className="text-sm text-red-600 dark:text-rose-400 hover:text-red-700 dark:hover:text-rose-300 border border-red-300 dark:border-red-700 rounded-lg px-3 py-1 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                              className="text-xs font-normal text-red-600 dark:text-rose-400 hover:text-red-700 dark:hover:text-rose-300 border border-red-300 dark:border-red-700 rounded px-2 py-1 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors truncate w-full text-left"
                             >
                               {getSettingsSummary(file.settings, file)}
                             </button>
                           </div>
 
                           {/* Status */}
-                          <div className="text-center min-w-[100px]">
+                          <div className="col-span-1">
                             {file.status === 'waiting' && (
-                              <span className="text-sm text-amber-600 dark:text-amber-400">Waiting</span>
+                              <span className="text-xs font-normal text-amber-600 dark:text-amber-400">Waiting</span>
                             )}
                             {file.status === 'converting' && (
-                              <div>
-                                <div className="text-sm text-blue-600 dark:text-blue-400 mb-1">
-                                  {file.progress < 10 ? 'Loading engine...' : `Converting ${file.progress}%`}
-                                </div>
-                                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                                  <div 
-                                    className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all duration-300"
-                                    style={{ width: `${file.progress}%` }}
-                                  />
-                                </div>
-                              </div>
+                              <span className="text-xs font-normal text-blue-600 dark:text-blue-400">
+                                {file.progress < 10 ? 'Loading...' : `${file.progress}%`}
+                              </span>
                             )}
                             {file.status === 'completed' && (
-                              <span className="text-sm text-green-600 dark:text-green-400">Completed</span>
+                              <span className="text-xs font-normal text-green-600 dark:text-green-400">Done</span>
                             )}
                             {file.status === 'error' && (
-                              <span className="text-sm text-red-600 dark:text-red-400">Error</span>
+                              <span className="text-xs font-normal text-red-600 dark:text-red-400">Error</span>
                             )}
                           </div>
 
                           {/* Actions */}
-                          <div className="flex gap-2">
-                            {file.status === 'completed' && (
-                              <button 
-                                onClick={openTargetDirectory}
-                                className="p-2 text-green-600 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-colors"
-                                title="Open target directory"
+                          <div className="col-span-1">
+                            <div className="flex gap-1 justify-end">
+                              {file.status === 'completed' && (
+                                <button 
+                                  onClick={openTargetDirectory}
+                                  className="p-1 text-green-600 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-900/20 rounded transition-colors"
+                                  title="Open target directory"
+                                >
+                                  <LuDownload className="w-3 h-3" />
+                                </button>
+                              )}
+                              <button
+                                onClick={() => removeFile(file.id)}
+                                className="p-1 text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors"
                               >
-                                <LuDownload className="w-4 h-4" />
+                                <LuTrash2 className="w-3 h-3" />
                               </button>
-                            )}
-                            <button
-                              onClick={() => removeFile(file.id)}
-                              className="p-2 text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
-                            >
-                              <LuTrash2 className="w-4 h-4" />
-                            </button>
+                            </div>
                           </div>
                         </div>
                       </div>
