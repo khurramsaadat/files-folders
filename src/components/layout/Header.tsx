@@ -61,7 +61,7 @@ export function Header() {
             >
               {item.label}
               {isActive && (
-                <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-red-300 rounded-full" />
+                <div className="absolute -bottom+.5 left-1/2 transform -translate-x-1/2 w-.5 h-.5 bg-red-300 rounded-full" />
               )}
             </Link>
           );
@@ -93,9 +93,9 @@ export function Header() {
 
         {/* Mobile Menu Dropdown */}
         <div className={cn(
-          "absolute top-full right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-rose-200 dark:border-rose-700 overflow-hidden transition-all duration-300 transform origin-top-right z-50",
+          "absolute top-full right-0 mt-2 w-54 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-rose-600 dark:border-rose-700 overflow-hidden transition-all duration-300 transform origin-top-right z-50",
           isMenuOpen 
-            ? "opacity-100 scale-100 translate-y-0" 
+            ? "opacity-100 scale-150 translate-y-0" 
             : "opacity-0 scale-95 -translate-y-2 pointer-events-none"
         )}>
           <div className="py-2">
@@ -106,7 +106,7 @@ export function Header() {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "block px-4 py-3 text-sm font-medium transition-all duration-200 transform",
+                    "block px-8 py-4 text-sm font-medium transition-all duration-900 transform",
                     isActive
                       ? "text-white bg-gradient-to-r from-red-600 to-red-700 shadow-md"
                       : "text-red-600 dark:text-rose-400 hover:text-red-700 dark:hover:text-rose-300 hover:bg-rose-50 dark:hover:bg-red-800/20",
