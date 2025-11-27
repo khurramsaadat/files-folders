@@ -262,10 +262,10 @@ function DashboardContent() {
 
             <div className="space-y-3 transition-all duration-300">
               <h3 className="text-2xl font-semibold bg-gradient-to-r from-red-700 to-red-900 dark:from-rose-200 dark:to-orange-200 bg-clip-text text-transparent transition-all duration-300 hover:from-red-600 hover:to-red-800">
-                {isDragOver ? 'Drop your files here' : 'Drag & drop files or folders'}
+                {isDragOver ? 'Drop your files here' : 'Select Files or Folders'}
               </h3>
               <p className="text-base text-red-600 dark:text-rose-400 transition-all duration-300 hover:text-red-700 dark:hover:text-rose-300">
-                {isDragOver ? 'Release to upload' : 'or click anywhere to browse'}
+                {isDragOver ? 'Release to upload' : 'Click anywhere to browse and select files'}
               </p>
       </div>
 

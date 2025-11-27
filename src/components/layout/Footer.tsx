@@ -104,7 +104,7 @@ export function Footer() {
         <div className="border-t border-rose-200 dark:border-rose-700 mt-8 pt-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-sm text-red-600 dark:text-rose-400">
-              © {currentYear} Files & Folders App. Made with ❤️ for better file organization.
+              © {currentYear} Files & Folders App. All rights reserved.
             </p>
             <div className="flex items-center space-x-4">
               <span className="text-xs px-3 py-1 rounded-full bg-gradient-to-r from-red-100 to-rose-100 dark:from-red-900/30 dark:to-rose-900/30 text-red-700 dark:text-rose-300 font-medium">

@@ -422,7 +422,7 @@ export default function BatchRenamePage() {
                       Select Files to Rename
                     </h3>
                     <p className="text-red-600 dark:text-rose-400 text-lg">
-                      Drag & drop files here or click anywhere to browse
+                      Click anywhere to browse and select files
                     </p>
                   </div>
 
@@ -444,6 +444,29 @@ export default function BatchRenamePage() {
               </div>
             </div>
           )}
+
+          {/* Privacy Message */}
+          <div className="w-full max-w-5xl mx-auto mb-8 px-2 sm:px-4">
+            <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+              <div className="flex items-center gap-3">
+                <div className="flex-shrink-0">
+                  <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
+                    <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                </div>
+                <div>
+                  <h4 className="text-sm font-semibold text-green-800 dark:text-green-200">
+                    🔒 Your Privacy is Protected
+                  </h4>
+                  <p className="text-sm text-green-700 dark:text-green-300 mt-1">
+                    All file processing happens locally on your device. Your files never leave your computer or get uploaded to any server.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
 
           {/* Settings Panel - Always Visible */}
           <div className="w-full max-w-5xl mx-auto mb-8 px-2 sm:px-4">

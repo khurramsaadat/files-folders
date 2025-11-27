@@ -8,13 +8,19 @@ import { cn } from '@/lib/utils';
 export function Header() {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   const navItems = [
-    { href: '/', label: 'File Structure' },
     { href: '/batch-rename', label: 'Batch Rename' },
+    { href: '/', label: 'File Structure' },
     { href: '/mp4-to-wmv', label: 'MP4 to WMV' },
     { href: '/contact', label: 'Contact' },
   ];
+
+  // Handle hydration
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Close menu when route changes
   useEffect(() => {
@@ -47,7 +53,7 @@ export function Header() {
       {/* Desktop Navigation */}
       <nav className="hidden md:flex items-center space-x-1">
         {navItems.map((item) => {
-          const isActive = pathname === item.href;
+          const isActive = isMounted && pathname === item.href;
           return (
             <Link 
               key={item.href}
@@ -100,7 +106,7 @@ export function Header() {
         )}>
           <div className="py-2">
             {navItems.map((item, index) => {
-              const isActive = pathname === item.href;
+              const isActive = isMounted && pathname === item.href;
               return (
                 <Link
                   key={item.href}
